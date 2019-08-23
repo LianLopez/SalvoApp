@@ -23,9 +23,15 @@ public class Game {
         this.creationDate = Date.from(newDate.toInstant().plusSeconds(time));
     }
 
+    public long getId() {
+        return id;
+    }
+
     public Date getDate() {
         return creationDate;
     }
+
+    public Set getGamePlayers(){return games;}
 
     public void addGames(GamePlayer games) {
         games.setGame(this);

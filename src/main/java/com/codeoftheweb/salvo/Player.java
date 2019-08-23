@@ -21,7 +21,7 @@ public class Player {
     public Player(String email) {
         this.userName = email;
     }
-
+    public Long getId(){return id;}
     public String getUserName() {
         return userName;
     }
