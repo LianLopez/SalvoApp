@@ -1,15 +1,18 @@
-function showOutput(text) {
-    $("#list").text(text);
-  }
 
-function loadData() {
+var app = new Vue({
+    el: "app",
+    data: {
+        games:[]
+    }
+)}
+  function loadData() {
     $.get("/api/games")
     .done(function(data) {
-      showOutput(JSON.stringify(data, null, 2));
+        app.games = data;
+        console.log(app.games);
     })
     .fail(function( jqXHR, textStatus ) {
-      showOutput( "Failed: " + textStatus );
+      console.log( "Failed: " + textStatus );
     });
   }
-
-  loadData()
+  loadData();

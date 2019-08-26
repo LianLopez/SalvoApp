@@ -2,6 +2,7 @@ package com.codeoftheweb.salvo;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.hibernate.annotations.GenericGenerator;
+
 import javax.persistence.*;
 import java.util.Date;
 
@@ -30,7 +31,9 @@ public class GamePlayer {
         this.player = player;
     }
 
-    public Long getId() {return id;}
+    public Long getId() {
+        return id;
+    }
 
     public Date getDate() {
         return date;
@@ -51,8 +54,9 @@ public class GamePlayer {
     }
 
     public void setGame(Game game) {
-         this.game = game;
+        this.game = game;
     }
 
-    public void add(GamePlayer games) { }
+    public void add(GamePlayer games) {
+    }
 }

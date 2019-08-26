@@ -1,6 +1,7 @@
 package com.codeoftheweb.salvo;
 
 import org.hibernate.annotations.GenericGenerator;
+
 import javax.persistence.*;
 import java.util.Date;
 import java.util.Set;
@@ -11,16 +12,21 @@ public class Game {
     @GeneratedValue(strategy = GenerationType.AUTO, generator = "native")
     @GenericGenerator(name = "native", strategy = "native")
     private long id;
-    private Date creationDate= new Date();
+    private Date creationDate = new Date();
 
-    @OneToMany(mappedBy="game", fetch= FetchType.EAGER)
+    @OneToMany(mappedBy = "game", fetch = FetchType.EAGER)
     Set<GamePlayer> games;
 
-    public Game() {}
+    public Game() {
+    }
 
-    public Game(int time) {
-        Date newDate = new Date();
-        this.creationDate = Date.from(newDate.toInstant().plusSeconds(time));
+    public Game(int seconds) {
+        if (seconds >= 0 ) {
+            Date newDate = new Date();
+            this.creationDate = Date.from(newDate.toInstant().plusSeconds(seconds));
+        } else {
+            this.creationDate = new Date();
+        }
     }
 
     public long getId() {
@@ -31,7 +37,9 @@ public class Game {
         return creationDate;
     }
 
-    public Set getGamePlayers(){return games;}
+    public Set getGamePlayers() {
+        return games;
+    }
 
     public void addGames(GamePlayer games) {
         games.setGame(this);
