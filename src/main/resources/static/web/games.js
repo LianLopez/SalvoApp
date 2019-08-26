@@ -1,10 +1,11 @@
 
 var app = new Vue({
-    el: "app",
+    el: "#app",
     data: {
         games:[]
     }
-)}
+});
+
   function loadData() {
     $.get("/api/games")
     .done(function(data) {
