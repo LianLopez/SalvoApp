@@ -41,9 +41,4 @@ public class Game {
         return games;
     }
 
-    public void addGames(GamePlayer games) {
-        games.setGame(this);
-        games.add(games);
-    }
-
 }

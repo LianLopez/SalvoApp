@@ -1,6 +1,7 @@
 package com.codeoftheweb.salvo;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -49,6 +50,37 @@ public class SalvoController {
         Map<String, Object> dto = new LinkedHashMap<>();
         dto.put("id", player.getId());
         dto.put("email", player.getUserName());
+        return dto;
+    }
+
+    @Autowired
+    private GamePlayerRepository gamePlayerRepository;
+
+    @RequestMapping("/game_view/{id}")
+    public Map<String, Object> getGameView(@PathVariable long id){
+        return gameViewDTO(gamePlayerRepository.findById(id).get());
+    }
+
+    private Map<String, Object> gameViewDTO(GamePlayer gamePlayer) {
+        Map<String, Object> dto = new LinkedHashMap<>();
+        dto.put("id", gamePlayer.getGame().getId());
+        dto.put("creationDate", gamePlayer.getGame().getDate());
+        dto.put("gamePlayers", getAllGamePlayers(gamePlayer.getGame().getGamePlayers()));
+        dto.put("ships", getShipList(gamePlayer.getShips()));
+
+        return dto;
+    }
+    private List<Map<String, Object>> getShipList(Set<Ship> ships) {
+        { return ships
+                .stream()
+                .map(ship -> makeShipDTO(ship))
+                .collect(Collectors.toList());
+        }
+    }
+    private Map<String,Object> makeShipDTO(Ship ship){
+        Map<String, Object> dto = new LinkedHashMap<>();
+        dto.put("shipType", ship.getType());
+        dto.put("shipLocations", ship.getShipLocation());
         return dto;
     }
 }

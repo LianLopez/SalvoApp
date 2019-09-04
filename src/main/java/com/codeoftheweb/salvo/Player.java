@@ -32,13 +32,5 @@ public class Player {
         return userName;
     }
 
-    public void setUserName(String email) {
-        this.userName = email;
-    }
-
-    public void addPlayer(GamePlayer gamePlayers) {
-        gamePlayers.setPlayer(this);
-        gamePlayers.add(gamePlayers);
-    }
 
 }
