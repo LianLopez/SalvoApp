@@ -4,7 +4,11 @@ import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
 import java.util.Date;
+import java.util.LinkedHashMap;
+import java.util.Map;
 import java.util.Set;
+
+import static java.util.stream.Collectors.toList;
 
 @Entity
 public class Game {
@@ -37,8 +41,15 @@ public class Game {
         return creationDate;
     }
 
-    public Set getGamePlayers() {
+    public Set<GamePlayer> getGamePlayers() {
         return games;
     }
 
+    public Map<String, Object> getDto() {
+        Map<String, Object> dto = new LinkedHashMap<>();
+        dto.put("id", this.getId());
+        dto.put("created", this.getDate().getTime());
+        dto.put("gamePlayers", getGamePlayers().stream().map(gamePlayer -> gamePlayer.getDto()));
+        return dto;
+    }
 }

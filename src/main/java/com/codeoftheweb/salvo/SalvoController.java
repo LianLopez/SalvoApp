@@ -11,76 +11,52 @@ import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import static java.util.stream.Collectors.toList;
+import static java.util.stream.Collectors.toSet;
+
 @RestController
 @RequestMapping("/api")
 public class SalvoController {
+
     @Autowired
     private GameRepository gameRepository;
+
+    @Autowired
+    private GamePlayerRepository gamePlayerRepository;
 
     @RequestMapping("/games")
     public List<Map<String, Object>> getGames() {
         return gameRepository.findAll()
                 .stream()
-                .map(Game -> makeGameDTO(Game))
-                .collect(Collectors.toList());
+                .map(Game -> Game.getDto())
+                .collect(toList());
     }
 
-    public Map<String, Object> makeGameDTO(Game game) {
-        Map<String, Object> dto = new LinkedHashMap<>();
-        dto.put("id", game.getId());
-        dto.put("created", game.getDate().getTime());
-        dto.put("gamePlayers", getAllGamePlayers(game.getGamePlayers()));
-        return dto;
-    }
 
-    public List<Map<String, Object>> getAllGamePlayers(Set<GamePlayer> gamePlayers) {
-        return gamePlayers.stream()
-                .map(GamePlayer -> makeGamePlayerDTO(GamePlayer))
-                .collect(Collectors.toList());
-    }
 
-    public Map<String, Object> makeGamePlayerDTO(GamePlayer gamePlayer) {
-        Map<String, Object> dto = new LinkedHashMap<>();
-        dto.put("id", gamePlayer.getId());
-        dto.put("player", makePlayerDTO(gamePlayer.getPlayer()));
-        return dto;
-    }
+       @RequestMapping("/game_view/{id}")
+    public Map<String, Object> getGameView(@PathVariable long id) {
+        GamePlayer gamePlayer = gamePlayerRepository.findById(id).get();
 
-    public Map<String, Object> makePlayerDTO(Player player) {
-        Map<String, Object> dto = new LinkedHashMap<>();
-        dto.put("id", player.getId());
-        dto.put("email", player.getUserName());
-        return dto;
-    }
-
-    @Autowired
-    private GamePlayerRepository gamePlayerRepository;
-
-    @RequestMapping("/game_view/{id}")
-    public Map<String, Object> getGameView(@PathVariable long id){
-        return gameViewDTO(gamePlayerRepository.findById(id).get());
-    }
-
-    private Map<String, Object> gameViewDTO(GamePlayer gamePlayer) {
-        Map<String, Object> dto = new LinkedHashMap<>();
-        dto.put("id", gamePlayer.getGame().getId());
-        dto.put("creationDate", gamePlayer.getGame().getDate());
-        dto.put("gamePlayer", getAllGamePlayers(gamePlayer.getGame().getGamePlayers()));
+        Map<String, Object> dto = gamePlayer.getGame().getDto();
         dto.put("ships", getShipList(gamePlayer.getShips()));
 
+        Set<GamePlayer> gamePlayers = gamePlayer.getGame().getGamePlayers();
+
+        Set<Salvo> salvoes = gamePlayers.stream()
+                .flatMap(gp -> gp.getSalvos()
+                        .stream())
+                .collect(toSet());
+
+        dto.put("salvoes", salvoes.stream().map(salvo -> salvo.getDto()));
         return dto;
     }
+
     private List<Map<String, Object>> getShipList(Set<Ship> ships) {
-        { return ships
+        return ships
                 .stream()
-                .map(ship -> makeShipDTO(ship))
-                .collect(Collectors.toList());
-        }
-    }
-    private Map<String,Object> makeShipDTO(Ship ship){
-        Map<String, Object> dto = new LinkedHashMap<>();
-        dto.put("shipType", ship.getType());
-        dto.put("shipLocations", ship.getShipLocation());
-        return dto;
+                .map(ship -> ship.getDto())
+                .collect(toList());
+
     }
 }
