@@ -16,16 +16,17 @@ public class Ship {
     private String type;
 
     @ElementCollection
-    @Column(name = "shipLocation")
+    @Column(name = "locations")
     private Set<String> shipLocation;
 
-     @ManyToOne(fetch = FetchType.EAGER)
-      @JoinColumn(name="gamePlayer_id")
-      private GamePlayer gamePlayer;
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "gamePlayer_id")
+    private GamePlayer gamePlayer;
 
-     public Ship(){
-         
-     }
+    public Ship() {
+
+    }
+
     public Ship(String type, Set<String> shipLocation, GamePlayer gamePlayer) {
         this.type = type;
         this.shipLocation = shipLocation;

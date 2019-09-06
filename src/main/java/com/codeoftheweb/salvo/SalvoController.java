@@ -65,7 +65,7 @@ public class SalvoController {
         Map<String, Object> dto = new LinkedHashMap<>();
         dto.put("id", gamePlayer.getGame().getId());
         dto.put("creationDate", gamePlayer.getGame().getDate());
-        dto.put("gamePlayers", getAllGamePlayers(gamePlayer.getGame().getGamePlayers()));
+        dto.put("gamePlayer", getAllGamePlayers(gamePlayer.getGame().getGamePlayers()));
         dto.put("ships", getShipList(gamePlayer.getShips()));
 
         return dto;

@@ -69,7 +69,7 @@ public class SalvoApplication {
             Ship ship4 = new Ship("Destroyer",shipL4,gamePlayer2);
             Ship ship5 = new Ship("Destroyer",shipL1,gamePlayer2);
 
-            shipRepository.saveAll(Arrays.asList(ship1,ship2,ship3,ship4,ship5));
+            shipRepository.saveAll(Arrays.asList(ship1,ship2,ship3,ship4,ship5));   
 
         };
     }
