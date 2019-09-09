@@ -8,14 +8,14 @@ function getParameterByName(name) {
 };
 
 function loadData(){
-    $.get('/api/game_view/'+getParameterByName('gamePlayer'))
+    $.get('/api/game_view/'+getParameterByName('gp'))
         .done(function(data) {
             console.log(data)
             let playerInfo;
-            if(data.gamePlayer[0].id == getParameterByName('gamePlayer'))
-                playerInfo = [data.gamePlayer[0].player.email,data.gamePlayer[1].player.email];
+            if(data.gamePlayers[0].id == getParameterByName('gp'))
+                playerInfo = [data.gamePlayers[0].player.email,data.gamePlayers[1].player.email];
             else
-                playerInfo = [data.gamePlayer[1].player.email,data.gamePlayer[0].player.email];
+                playerInfo = [data.gamePlayers[1].player.email,data.gamePlayers[0].player.email];
 
             $('#playerInfo').text(playerInfo[0] + '(you) vs ' + playerInfo[1]);
 
@@ -25,6 +25,7 @@ function loadData(){
                 })
             });
         })
+
         .fail(function( jqXHR, textStatus ) {
           alert( "Failed: " + textStatus );
         });

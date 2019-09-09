@@ -25,7 +25,7 @@ public class Game {
     }
 
     public Game(int seconds) {
-        if (seconds >= 0 ) {
+        if (seconds >= 0) {
             Date newDate = new Date();
             this.creationDate = Date.from(newDate.toInstant().plusSeconds(seconds));
         } else {

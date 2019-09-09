@@ -51,7 +51,7 @@ public class Ship {
         return gamePlayer;
     }
 
-    public Map<String,Object> getDto(){
+    public Map<String, Object> getDto() {
         Map<String, Object> dto = new LinkedHashMap<>();
         dto.put("shipType", getType());
         dto.put("shipLocations", getShipLocation());

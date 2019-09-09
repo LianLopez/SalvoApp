@@ -62,6 +62,7 @@ public class GamePlayer {
     public Set<Salvo> getSalvos() {
         return Salvos;
     }
+
     public Map<String, Object> getDto() {
         Map<String, Object> dto = new LinkedHashMap<>();
         dto.put("id", getId());

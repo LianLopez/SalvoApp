@@ -1,6 +1,5 @@
 package com.codeoftheweb.salvo;
 
-import com.sun.org.apache.xpath.internal.objects.XObject;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -18,9 +17,12 @@ public class SalvoApplication {
     }
 
     @Bean
-    public CommandLineRunner initData(PlayerRepository playerRepository, GameRepository gameRepository, GamePlayerRepository gamePlayerRepository, ShipRepository shipRepository) {
+    public CommandLineRunner initData(PlayerRepository playerRepository,
+                                      GameRepository gameRepository,
+                                      GamePlayerRepository gamePlayerRepository,
+                                      ShipRepository shipRepository,
+                                      SalvoRepository salvoRepository) {
         return (args) -> {
-            // save a couple of customers
             Player player1 = new Player("j.bauer@ctu.gov");
             Player player2 = new Player("c.obrian@ctu.gov");
             Player player3 = new Player("t.almeida@ctu.gov");
@@ -57,20 +59,31 @@ public class SalvoApplication {
             gamePlayerRepository.save(gamePlayer5);
             gamePlayerRepository.save(gamePlayer6);
 
-            Set<String> shipL1 = new HashSet<>(Arrays.asList("H2","H3","H4"));
-            Set<String> shipL2 = new HashSet<>(Arrays.asList("E1","F1","G1"));
-            Set<String> shipL3 = new HashSet<>(Arrays.asList("B4","B5"));
-            Set<String> shipL4 = new HashSet<>(Arrays.asList("B5","C5","D5"));
-            Set<String> shipL5 = new HashSet<>(Arrays.asList("F1","F2"));
+            Set<String> shipL1 = new HashSet<>(Arrays.asList("H2", "H3", "H4"));
+            Set<String> shipL2 = new HashSet<>(Arrays.asList("E1", "F1", "G1"));
+            Set<String> shipL3 = new HashSet<>(Arrays.asList("B4", "B5"));
+            Set<String> shipL4 = new HashSet<>(Arrays.asList("B5", "C5", "D5"));
+            Set<String> shipL5 = new HashSet<>(Arrays.asList("F1", "F2"));
 
             Ship ship1 = new Ship("Destroyer", shipL1, gamePlayer1);
-            Ship ship2 = new Ship("Submarine",shipL2,gamePlayer1);
-            Ship ship3 = new Ship("Patrol Boat",shipL3,gamePlayer1);
-            Ship ship4 = new Ship("Destroyer",shipL4,gamePlayer2);
-            Ship ship5 = new Ship("Destroyer",shipL1,gamePlayer2);
+            Ship ship2 = new Ship("Submarine", shipL2, gamePlayer1);
+            Ship ship3 = new Ship("Patrol Boat", shipL3, gamePlayer1);
+            Ship ship4 = new Ship("Destroyer", shipL4, gamePlayer2);
+            Ship ship5 = new Ship("Destroyer", shipL5, gamePlayer2);
 
-            shipRepository.saveAll(Arrays.asList(ship1,ship2,ship3,ship4,ship5));
+            shipRepository.saveAll(Arrays.asList(ship1, ship2, ship3, ship4, ship5));
 
+            Set<String> salvoL1 = new HashSet<>(Arrays.asList("H1", "H2", "H3"));
+            Set<String> salvoL2 = new HashSet<>(Arrays.asList("A3", "A4"));
+            Set<String> salvoL3 = new HashSet<>(Arrays.asList("F5", "F6"));
+            Set<String> salvoL4 = new HashSet<>(Arrays.asList("B3", "H4", "B5"));
+
+            Salvo salvo1 = new Salvo(gamePlayer1, 1, salvoL1);
+            Salvo salvo2 = new Salvo(gamePlayer2, 1, salvoL2);
+            Salvo salvo3 = new Salvo(gamePlayer1, 2, salvoL3);
+            Salvo salvo4 = new Salvo(gamePlayer2, 2, salvoL4);
+
+            salvoRepository.saveAll(Arrays.asList(salvo1, salvo2, salvo3, salvo4));
         };
     }
 }

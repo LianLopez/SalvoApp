@@ -24,6 +24,9 @@ public class Salvo {
     @Column(name = "locations")
     private Set<String> salvosLocation;
 
+    public Salvo() {
+    }
+
     public Salvo(GamePlayer gamePlayers, int turn, Set<String> salvosLocation) {
         this.gamePlayers = gamePlayers;
         this.turn = turn;
@@ -46,11 +49,11 @@ public class Salvo {
         return salvosLocation;
     }
 
-    public Map<String, Object> getDto(){
+    public Map<String, Object> getDto() {
         Map<String, Object> dto = new HashMap<>();
-        dto.put("turn", this.turn);
+        dto.put("turn", getTurn());
         dto.put("player", getGamePlayers().getPlayer().getId());
-        dto.put("locations", this.salvosLocation);
+        dto.put("salvoLocations", getSalvosLocation());
         return dto;
     }
 }
