@@ -1,7 +1,6 @@
 package com.codeoftheweb.salvo;
 
 import org.hibernate.annotations.GenericGenerator;
-
 import javax.persistence.*;
 import java.util.Date;
 
@@ -32,5 +31,4 @@ public class Score {
         this.game = game;
         this.player = player;
     }
-    
 }
