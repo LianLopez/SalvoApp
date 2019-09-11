@@ -1,4 +1,9 @@
-
+var app = new Vue({
+    el: "#app",
+    data: {
+           players:[]
+}
+})
 
 $(function () {
   loadData();
@@ -10,6 +15,14 @@ function getParameterByName(name) {
 }
 
 function loadData() {
+  $.get('/api/leaderboard/')
+  .done(function (data){
+    app.players = data;
+    })
+  .fail(function (jqXHR, textStatus) {
+        alert('Failed: ' + textStatus);
+      });
+/*
   $.get('/api/game_view/' + getParameterByName('gp'))
     .done(function (data) {
       console.log(data);
@@ -60,4 +73,5 @@ function isHit(shipLocation,salvos,playerId) {
       });
   });
   return hit;
+  */
 }

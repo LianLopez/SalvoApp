@@ -1,6 +1,8 @@
 package com.codeoftheweb.salvo;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.hibernate.annotations.GenericGenerator;
+
 import javax.persistence.*;
 import java.util.Date;
 
@@ -11,9 +13,9 @@ public class Score {
     @GenericGenerator(name = "native", strategy = "native")
     private long id;
 
-    private float score;
+    private double score;
 
-    private Date finishDate;
+    private Date finishDate = new Date();
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "game_id")
@@ -26,9 +28,27 @@ public class Score {
     public Score() {
     }
 
-    public Score(float score, Game game, Player player) {
+    public Score(double score, Game game, Player player) {
         this.score = score;
         this.game = game;
         this.player = player;
     }
+
+    public double getScore() {
+        return score;
+    }
+
+    public Date getFinishDate() {
+        return finishDate;
+    }
+    @JsonIgnore
+    public Game getGame() {
+        return game;
+    }
+    @JsonIgnore
+    public Player getPlayer() {
+        return player;
+    }
+
+
 }

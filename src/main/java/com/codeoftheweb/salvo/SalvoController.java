@@ -5,11 +5,10 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.LinkedHashMap;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toSet;
@@ -24,11 +23,14 @@ public class SalvoController {
     @Autowired
     private GamePlayerRepository gamePlayerRepository;
 
+    @Autowired
+    private PlayerRepository playerRepository;
+
     @RequestMapping("/games")
     public List<Map<String, Object>> getGames() {
         return gameRepository.findAll()
                 .stream()
-                .map(Game -> Game.getDto())
+                .map(Game::getDto)
                 .collect(toList());
     }
 
@@ -43,15 +45,24 @@ public class SalvoController {
                 .flatMap(gp -> gp.getSalvos()
                         .stream())
                 .collect(toSet());
-        dto.put("salvos", salvos.stream().map(salvo -> salvo.getDto()));
+        dto.put("salvos", salvos.stream().map(Salvo::getDto));
         return dto;
+    }
+
+
+    @RequestMapping("/leaderboard")
+    public List<Map<String, Object>> getPlayers() {
+        return playerRepository.findAll()
+                .stream()
+                .sorted(Comparator.comparing(Player::totalScore).reversed())
+                .map(Player::getLeaderboardDto)
+                .collect(toList());
     }
 
     private List<Map<String, Object>> getShipList(Set<Ship> ships) {
         return ships
                 .stream()
-                .map(ship -> ship.getDto())
+                .map(Ship::getDto)
                 .collect(toList());
-
     }
 }
