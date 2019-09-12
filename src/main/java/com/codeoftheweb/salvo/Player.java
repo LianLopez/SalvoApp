@@ -6,7 +6,6 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-
 import static java.util.stream.Collectors.toSet;
 
 @Entity
@@ -19,6 +18,10 @@ public class Player {
 
     private String userName;
 
+    private String name;
+
+    private String password;
+
     @OneToMany(mappedBy = "player", fetch = FetchType.EAGER)
     Set<GamePlayer> gamePlayers;
 
@@ -28,8 +31,10 @@ public class Player {
     public Player() {
     }
 
-    public Player(String email) {
+    public Player(String name, String email, String password) {
         this.userName = email;
+        this.name = name;
+        this.password = password;
     }
 
     public Long getId() {
@@ -40,6 +45,10 @@ public class Player {
         return userName;
     }
 
+    public String getPassword() {
+        return password;
+    }
+
     public Set<GamePlayer> getGamePlayers() {
         return gamePlayers;
     }
@@ -48,9 +57,14 @@ public class Player {
         return scores;
     }
 
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
     public Set<Score> getWon(){
         return getScores().stream().filter(score -> score.getScore() == 1).collect(toSet());
     }
+
     public Set<Score> getTied(){
         return getScores().stream().filter(score -> score.getScore() == 0.5).collect(toSet());
     }
@@ -79,7 +93,4 @@ public class Player {
         dto.put("ties", getTied().size());
         return dto;
     }
-
-
-
 }

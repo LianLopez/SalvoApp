@@ -24,19 +24,17 @@ public class SalvoApplication {
                                       SalvoRepository salvoRepository,
                                       ScoreRepository scoreRepository) {
         return (args) -> {
-            Player player1 = new Player("j.bauer@ctu.gov");
-            Player player2 = new Player("c.obrian@ctu.gov");
-            Player player3 = new Player("t.almeida@ctu.gov");
-            Player player4 = new Player("d.palmer@whitehouse.gov");
-            Player player5 = new Player("zeller@icloud.com");
-            Player player6 = new Player("piolix@icloud.com");
+            Player player1 = new Player("Jack Bauer","j.bauer@ctu.gov", "24");
+            Player player2 = new Player("Chloe O'Brian","c.obrian@ctu.gov", "42");
+            Player player3 = new Player("Kim Bauer","kim_bauer@gmail.com", "kb");
+            Player player4 = new Player("Tony Almeida","t.almeida@ctu.gov", "mole");
 
-            playerRepository.saveAll(Arrays.asList(player1, player2, player3, player4, player5, player6));
+            playerRepository.saveAll(Arrays.asList(player1, player2, player3, player4));
 
             Game game1 = new Game();
             Game game2 = new Game(3600);
-            Game game3 = new Game(7200);
-            Game game4 = new Game();
+            Game game3 = new Game(3600*2);
+            Game game4 = new Game(3600*3);
 
 
             gameRepository.saveAll(Arrays.asList(game1, game2, game3, game4));
@@ -45,10 +43,10 @@ public class SalvoApplication {
             GamePlayer gamePlayer2 = new GamePlayer(game1, player2);
             GamePlayer gamePlayer3 = new GamePlayer(game2, player3);
             GamePlayer gamePlayer4 = new GamePlayer(game2, player4);
-            GamePlayer gamePlayer5 = new GamePlayer(game3, player5);
-            GamePlayer gamePlayer6 = new GamePlayer(game3, player6);
-            GamePlayer gamePlayer7 = new GamePlayer(game4, player5);
-            GamePlayer gamePlayer8 = new GamePlayer(game4, player6);
+            GamePlayer gamePlayer5 = new GamePlayer(game3, player1);
+            GamePlayer gamePlayer6 = new GamePlayer(game3, player3);
+            GamePlayer gamePlayer7 = new GamePlayer(game4, player4);
+            GamePlayer gamePlayer8 = new GamePlayer(game4, player2);
 
             gamePlayerRepository.saveAll(Arrays.asList(gamePlayer1, gamePlayer2, gamePlayer3, gamePlayer4, gamePlayer5, gamePlayer6, gamePlayer7, gamePlayer8));
 
@@ -82,10 +80,10 @@ public class SalvoApplication {
             Score score2 = new Score(0, game1, player2);
             Score score3 = new Score(0.5, game2, player3);
             Score score4 = new Score(0.5, game2, player4);
-            Score score5 = new Score(1, game3, player5);
-            Score score6 = new Score(0, game3, player6);
-            Score score7 = new Score(0.5, game4, player2);
-            Score score8 = new Score(0.5, game4, player3);
+            Score score5 = new Score(1, game3, player1);
+            Score score6 = new Score(0, game3, player3);
+            Score score7 = new Score(0.5, game4, player4);
+            Score score8 = new Score(0.5, game4, player2);
 
             scoreRepository.saveAll(Arrays.asList(score1, score2, score3, score4, score5, score6, score7, score8));
         };
