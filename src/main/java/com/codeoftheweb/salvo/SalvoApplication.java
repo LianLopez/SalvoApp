@@ -3,7 +3,10 @@ package com.codeoftheweb.salvo;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.web.servlet.support.SpringBootServletInitializer;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.security.config.annotation.authentication.configuration.GlobalAuthenticationConfigurerAdapter;
 
 import java.util.Arrays;
 import java.util.HashSet;
@@ -12,80 +15,95 @@ import java.util.Set;
 @SpringBootApplication
 public class SalvoApplication {
 
-    public static void main(String[] args) {
-        SpringApplication.run(SalvoApplication.class, args);
-    }
+  public static void main(String[] args) {
+    SpringApplication.run(SalvoApplication.class, args);
+  }
 
-    @Bean
-    public CommandLineRunner initData(PlayerRepository playerRepository,
-                                      GameRepository gameRepository,
-                                      GamePlayerRepository gamePlayerRepository,
-                                      ShipRepository shipRepository,
-                                      SalvoRepository salvoRepository,
-                                      ScoreRepository scoreRepository) {
-        return (args) -> {
-            Player player1 = new Player("Jack Bauer","j.bauer@ctu.gov", "24");
-            Player player2 = new Player("Chloe O'Brian","c.obrian@ctu.gov", "42");
-            Player player3 = new Player("Kim Bauer","kim_bauer@gmail.com", "kb");
-            Player player4 = new Player("Tony Almeida","t.almeida@ctu.gov", "mole");
+  @Bean
+  public CommandLineRunner initData(PlayerRepository playerRepository,
+                                    GameRepository gameRepository,
+                                    GamePlayerRepository gamePlayerRepository,
+                                    ShipRepository shipRepository,
+                                    SalvoRepository salvoRepository,
+                                    ScoreRepository scoreRepository) {
+    return (args) -> {
+      Player player1 = new Player("Jack Bauer", "j.bauer@ctu.gov", "24");
+      Player player2 = new Player("Chloe O'Brian", "c.obrian@ctu.gov", "42");
+      Player player3 = new Player("Kim Bauer", "kim_bauer@gmail.com", "kb");
+      Player player4 = new Player("Tony Almeida", "t.almeida@ctu.gov", "mole");
 
-            playerRepository.saveAll(Arrays.asList(player1, player2, player3, player4));
+      playerRepository.saveAll(Arrays.asList(player1, player2, player3, player4));
 
-            Game game1 = new Game();
-            Game game2 = new Game(3600);
-            Game game3 = new Game(3600*2);
-            Game game4 = new Game(3600*3);
+      Game game1 = new Game();
+      Game game2 = new Game(3600);
+      Game game3 = new Game(3600 * 2);
+      Game game4 = new Game(3600 * 3);
 
 
-            gameRepository.saveAll(Arrays.asList(game1, game2, game3, game4));
+      gameRepository.saveAll(Arrays.asList(game1, game2, game3, game4));
 
-            GamePlayer gamePlayer1 = new GamePlayer(game1, player1);
-            GamePlayer gamePlayer2 = new GamePlayer(game1, player2);
-            GamePlayer gamePlayer3 = new GamePlayer(game2, player3);
-            GamePlayer gamePlayer4 = new GamePlayer(game2, player4);
-            GamePlayer gamePlayer5 = new GamePlayer(game3, player1);
-            GamePlayer gamePlayer6 = new GamePlayer(game3, player3);
-            GamePlayer gamePlayer7 = new GamePlayer(game4, player4);
-            GamePlayer gamePlayer8 = new GamePlayer(game4, player2);
+      GamePlayer gamePlayer1 = new GamePlayer(game1, player1);
+      GamePlayer gamePlayer2 = new GamePlayer(game1, player2);
+      GamePlayer gamePlayer3 = new GamePlayer(game2, player3);
+      GamePlayer gamePlayer4 = new GamePlayer(game2, player4);
+      GamePlayer gamePlayer5 = new GamePlayer(game3, player1);
+      GamePlayer gamePlayer6 = new GamePlayer(game3, player3);
+      GamePlayer gamePlayer7 = new GamePlayer(game4, player4);
+      GamePlayer gamePlayer8 = new GamePlayer(game4, player2);
 
-            gamePlayerRepository.saveAll(Arrays.asList(gamePlayer1, gamePlayer2, gamePlayer3, gamePlayer4, gamePlayer5, gamePlayer6, gamePlayer7, gamePlayer8));
+      gamePlayerRepository.saveAll(Arrays.asList(gamePlayer1, gamePlayer2, gamePlayer3, gamePlayer4, gamePlayer5, gamePlayer6, gamePlayer7, gamePlayer8));
 
-            Set<String> shipL1 = new HashSet<>(Arrays.asList("H2", "H3", "H4"));
-            Set<String> shipL2 = new HashSet<>(Arrays.asList("E1", "F1", "G1"));
-            Set<String> shipL3 = new HashSet<>(Arrays.asList("B4", "B5"));
-            Set<String> shipL4 = new HashSet<>(Arrays.asList("B5", "C5", "D5"));
-            Set<String> shipL5 = new HashSet<>(Arrays.asList("F1", "F2"));
+      Set<String> shipL1 = new HashSet<>(Arrays.asList("H2", "H3", "H4"));
+      Set<String> shipL2 = new HashSet<>(Arrays.asList("E1", "F1", "G1"));
+      Set<String> shipL3 = new HashSet<>(Arrays.asList("B4", "B5"));
+      Set<String> shipL4 = new HashSet<>(Arrays.asList("B5", "C5", "D5"));
+      Set<String> shipL5 = new HashSet<>(Arrays.asList("F1", "F2"));
 
-            Ship ship1 = new Ship("Destroyer", shipL1, gamePlayer1);
-            Ship ship2 = new Ship("Submarine", shipL2, gamePlayer1);
-            Ship ship3 = new Ship("Patrol Boat", shipL3, gamePlayer1);
-            Ship ship4 = new Ship("Destroyer", shipL4, gamePlayer2);
-            Ship ship5 = new Ship("Destroyer", shipL5, gamePlayer2);
+      Ship ship1 = new Ship("Destroyer", shipL1, gamePlayer1);
+      Ship ship2 = new Ship("Submarine", shipL2, gamePlayer1);
+      Ship ship3 = new Ship("Patrol Boat", shipL3, gamePlayer1);
+      Ship ship4 = new Ship("Destroyer", shipL4, gamePlayer2);
+      Ship ship5 = new Ship("Destroyer", shipL5, gamePlayer2);
 
-            shipRepository.saveAll(Arrays.asList(ship1, ship2, ship3, ship4, ship5));
+      shipRepository.saveAll(Arrays.asList(ship1, ship2, ship3, ship4, ship5));
 
-            Set<String> salvoL1 = new HashSet<>(Arrays.asList("H1", "H2", "H3"));
-            Set<String> salvoL2 = new HashSet<>(Arrays.asList("A3", "A4"));
-            Set<String> salvoL3 = new HashSet<>(Arrays.asList("F5", "F6"));
-            Set<String> salvoL4 = new HashSet<>(Arrays.asList("B3", "H4", "B5"));
+      Set<String> salvoL1 = new HashSet<>(Arrays.asList("H1", "H2", "H3"));
+      Set<String> salvoL2 = new HashSet<>(Arrays.asList("A3", "A4"));
+      Set<String> salvoL3 = new HashSet<>(Arrays.asList("F5", "F6"));
+      Set<String> salvoL4 = new HashSet<>(Arrays.asList("B3", "H4", "B5"));
 
-            Salvo salvo1 = new Salvo(gamePlayer1, 1, salvoL1);
-            Salvo salvo2 = new Salvo(gamePlayer2, 1, salvoL2);
-            Salvo salvo3 = new Salvo(gamePlayer1, 2, salvoL3);
-            Salvo salvo4 = new Salvo(gamePlayer2, 2, salvoL4);
+      Salvo salvo1 = new Salvo(gamePlayer1, 1, salvoL1);
+      Salvo salvo2 = new Salvo(gamePlayer2, 1, salvoL2);
+      Salvo salvo3 = new Salvo(gamePlayer1, 2, salvoL3);
+      Salvo salvo4 = new Salvo(gamePlayer2, 2, salvoL4);
 
-            salvoRepository.saveAll(Arrays.asList(salvo1, salvo2, salvo3, salvo4));
+      salvoRepository.saveAll(Arrays.asList(salvo1, salvo2, salvo3, salvo4));
 
-            Score score1 = new Score(1, game1, player1);
-            Score score2 = new Score(0, game1, player2);
-            Score score3 = new Score(0.5, game2, player3);
-            Score score4 = new Score(0.5, game2, player4);
-            Score score5 = new Score(1, game3, player1);
-            Score score6 = new Score(0, game3, player3);
-            Score score7 = new Score(0.5, game4, player4);
-            Score score8 = new Score(0.5, game4, player2);
+      Score score1 = new Score(1, game1, player1);
+      Score score2 = new Score(0, game1, player2);
+      Score score3 = new Score(0.5, game2, player3);
+      Score score4 = new Score(0.5, game2, player4);
+      Score score5 = new Score(1, game3, player1);
+      Score score6 = new Score(0, game3, player3);
+      Score score7 = new Score(0.5, game4, player4);
+      Score score8 = new Score(0.5, game4, player2);
 
-            scoreRepository.saveAll(Arrays.asList(score1, score2, score3, score4, score5, score6, score7, score8));
-        };
-    }
+      scoreRepository.saveAll(Arrays.asList(score1, score2, score3, score4, score5, score6, score7, score8));
+    };
+  }
 }
+
+@SpringBootApplication
+class Application extends SpringBootServletInitializer {
+  class UserDetailsService{
+      public void loadUserByUsername(int id){
+
+      }
+  }
+}
+
+@Configuration
+class WebSecurityConfiguration extends GlobalAuthenticationConfigurerAdapter {
+
+}
+

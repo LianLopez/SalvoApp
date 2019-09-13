@@ -12,55 +12,55 @@ import static java.util.stream.Collectors.toList;
 
 @Entity
 public class Game {
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO, generator = "native")
-    @GenericGenerator(name = "native", strategy = "native")
-    private long id;
-    private Date creationDate = new Date();
+  @Id
+  @GeneratedValue(strategy = GenerationType.AUTO, generator = "native")
+  @GenericGenerator(name = "native", strategy = "native")
+  private long id;
+  private Date creationDate = new Date();
 
-    @OneToMany(mappedBy = "game", fetch = FetchType.EAGER)
-    Set<GamePlayer> games;
+  @OneToMany(mappedBy = "game", fetch = FetchType.EAGER)
+  Set<GamePlayer> games;
 
-    @OneToMany(mappedBy = "game", fetch = FetchType.EAGER)
-    Set<Score> scores;
+  @OneToMany(mappedBy = "game", fetch = FetchType.EAGER)
+  Set<Score> scores;
 
-    public Game() {
+  public Game() {
+  }
+
+  public Game(int seconds) {
+    if (seconds >= 0) {
+      Date newDate = new Date();
+      this.creationDate = Date.from(newDate.toInstant().plusSeconds(seconds));
+    } else {
+      this.creationDate = new Date();
     }
+  }
 
-    public Game(int seconds) {
-        if (seconds >= 0) {
-            Date newDate = new Date();
-            this.creationDate = Date.from(newDate.toInstant().plusSeconds(seconds));
-        } else {
-            this.creationDate = new Date();
-        }
-    }
+  public long getId() {
+    return id;
+  }
 
-    public long getId() {
-        return id;
-    }
+  public Set<GamePlayer> getGamePlayers() {
+    return games;
+  }
 
-    public Set<GamePlayer> getGamePlayers() {
-        return games;
-    }
+  public Date getDate() {
+    return creationDate;
+  }
 
-    public Date getDate() {
-        return creationDate;
-    }
+  public Set<GamePlayer> getGames() {
+    return games;
+  }
 
-    public Set<GamePlayer> getGames() {
-        return games;
-    }
+  public Set<Score> getScores() {
+    return scores;
+  }
 
-    public Set<Score> getScores() {
-        return scores;
-    }
-
-    public Map<String, Object> getDto() {
-        Map<String, Object> dto = new LinkedHashMap<>();
-        dto.put("id", this.getId());
-        dto.put("created", this.getDate().getTime());
-        dto.put("gamePlayers", getGamePlayers().stream().map(gamePlayer -> gamePlayer.getDto()));
-        return dto;
-    }
+  public Map<String, Object> getDto() {
+    Map<String, Object> dto = new LinkedHashMap<>();
+    dto.put("id", this.getId());
+    dto.put("created", this.getDate().getTime());
+    dto.put("gamePlayers", getGamePlayers().stream().map(gamePlayer -> gamePlayer.getDto()));
+    return dto;
+  }
 }
