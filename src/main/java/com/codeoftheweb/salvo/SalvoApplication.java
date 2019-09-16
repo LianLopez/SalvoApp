@@ -96,7 +96,7 @@ public class SalvoApplication {
 @SpringBootApplication
 class Application extends SpringBootServletInitializer {
   class UserDetailsService{
-      public void loadUserByUsername(int id){
+      public void loadUserByUsername(String name){
 
       }
   }
