@@ -55,6 +55,10 @@ public class Player {
     return gamePlayers;
   }
 
+  public String getName() {
+    return name;
+  }
+
   public Set<Score> getScores() {
     return scores;
   }
