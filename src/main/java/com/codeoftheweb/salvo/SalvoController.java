@@ -1,14 +1,12 @@
 package com.codeoftheweb.salvo;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.Comparator;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toSet;
@@ -27,13 +25,15 @@ public class SalvoController {
   private PlayerRepository playerRepository;
 
   @RequestMapping("/games")
-  public List<Map<String, Object>> getGames() {
-    return gameRepository.findAll()
+  public Map<String, Object> getGames(Authentication authentication) {
+    Map<String, Object> dto = new LinkedHashMap<>();
+    dto.put("player", authentication.getName());
+    dto.put("games", gameRepository.findAll()
             .stream()
             .map(Game::getDto)
-            .collect(toList());
+            .collect(toList()));
+    return dto;
   }
-
 
   @RequestMapping("/game_view/{id}")
   public Map<String, Object> getGameView(@PathVariable long id) {
