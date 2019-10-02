@@ -41,10 +41,10 @@ public class SalvoApplication {
                                     SalvoRepository salvoRepository,
                                     ScoreRepository scoreRepository) {
     return (args) -> {
-      Player player1 = new Player("Jack Bauer", "j.bauer@ctu.gov", "24");
-      Player player2 = new Player("Chloe O'Brian", "c.obrian@ctu.gov", "42");
-      Player player3 = new Player("Kim Bauer", "kim_bauer@gmail.com", "kb");
-      Player player4 = new Player("Tony Almeida", "t.almeida@ctu.gov", "mole");
+      Player player1 = new Player( "j.bauer@ctu.gov", "24");
+      Player player2 = new Player("c.obrian@ctu.gov", "42");
+      Player player3 = new Player("kim_bauer@gmail.com", "kb");
+      Player player4 = new Player(" t.almeida@ctu.gov", "mole");
 
       playerRepository.saveAll(Arrays.asList(player1, player2, player3, player4));
 
