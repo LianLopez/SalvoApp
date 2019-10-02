@@ -1,6 +1,7 @@
 package com.codeoftheweb.salvo;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -27,12 +28,21 @@ public class SalvoController {
   @RequestMapping("/games")
   public Map<String, Object> getGames(Authentication authentication) {
     Map<String, Object> dto = new LinkedHashMap<>();
-    dto.put("player", authentication.getName());
+    if (Guest(authentication)){
+      dto.put("player", "Guest");
+    }else{
+      Player player = playerRepository.findByUserName(authentication.getName());
+      dto.put("player", player.getPlayerDto());
+    }
     dto.put("games", gameRepository.findAll()
             .stream()
             .map(Game::getDto)
             .collect(toList()));
     return dto;
+  }
+
+  private boolean Guest(Authentication authentication) {
+    return authentication == null || authentication instanceof AnonymousAuthenticationToken;
   }
 
   @RequestMapping("/game_view/{id}")
