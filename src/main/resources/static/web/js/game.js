@@ -23,25 +23,23 @@ function loadData() {
         alert('Failed: ' + textStatus);
       });
 
-function login(evt) {
-  evt.preventDefault();
-  var form = evt.target.form;
-  $.post("/api/login",
-         { name: form["username"].value,
-           pwd: form["password"].value })
-   .done(console.log("loggeado"))
-   .fail(function (jqXHR, textStatus) {
-           alert('Failed: ' + textStatus);
-         });
 }
 
-function logout(evt) {
-  evt.preventDefault();
-  $.post("/api/logout")
-   .done(console.log("desloggeado"))
-   .fail(function (jqXHR, textStatus) {
-           alert('Failed: ' + textStatus);
-         });
-}
+function login() {
+      var form = document.getElementById('login-form')
+      $.post("/api/login",
+             { username: form["username"].value,
+               password: form["password"].value })
+             .done(console.log("logeado"))
+       .fail(function (jqXHR, textStatus) {
+               alert('Failed: ' + textStatus);
+             });
+    }
 
-}
+    function logout() {
+      $.post("/api/logout")
+       .done(console.log("desloggeado"))
+       .fail(function (jqXHR, textStatus) {
+               alert('Failed: ' + textStatus);
+             });
+    }
