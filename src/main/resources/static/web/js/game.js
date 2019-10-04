@@ -48,9 +48,9 @@ function login() {
              $.post("/api/login",
                           { username: form["username"].value,
                             password: form["password"].value })
-                         .done(app.currentUser = form["username"])
+                         .done(cargarUsuario())
                          .fail(function (jqXHR, textStatus) {
-                            alert('Failed: ' + textStatus);
+                            alert('Failed: ' + jqXHR.status);
                           });
     }else{
         console.log("Ya existe un usuario")
