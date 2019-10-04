@@ -29,7 +29,9 @@ public class SalvoController {
   public Map<String, Object> getGames(Authentication authentication) {
     Map<String, Object> dto = new LinkedHashMap<>();
     if (Guest(authentication)){
-      dto.put("player", "Guest");
+      Map<String, Object> guest = new LinkedHashMap<>();
+      guest.put("email", "Guest");
+      dto.put("player", guest);
     }else{
       Player player = playerRepository.findByUserName(authentication.getName());
       dto.put("player", player.getPlayerDto());

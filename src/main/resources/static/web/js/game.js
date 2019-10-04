@@ -1,12 +1,15 @@
 var app = new Vue({
     el: "#app",
     data: {
-           players:[]
+           players:[],
+           games: [],
+           currentUser: ""
 }
 })
 
 $(function () {
   loadData();
+  cargarUsuario();
 });
 
 function getParameterByName(name) {
@@ -23,23 +26,43 @@ function loadData() {
         alert('Failed: ' + textStatus);
       });
 
+
+
 }
 
-function login() {
-      var form = document.getElementById('login-form')
-      $.post("/api/login",
-             { username: form["username"].value,
-               password: form["password"].value })
-             .done(console.log("logeado"))
-       .fail(function (jqXHR, textStatus) {
+    function cargarUsuario(){
+     $.get("/api/games")
+           .done(function(data){
+               app.games = data.games;
+               app.currentUser = data.player.email;
+               console.log(data.player.email)
+               })
+            .fail(function (jqXHR, textStatus) {
                alert('Failed: ' + textStatus);
-             });
+            })
+    }
+
+function login() {
+     if(app.currentUser == "Guest"){
+     var form = document.getElementById('login-form')
+             $.post("/api/login",
+                          { username: form["username"].value,
+                            password: form["password"].value })
+                         .done(app.currentUser = form["username"])
+                         .fail(function (jqXHR, textStatus) {
+                            alert('Failed: ' + textStatus);
+                          });
+    }else{
+        console.log("Ya existe un usuario")
+    }
+
     }
 
     function logout() {
       $.post("/api/logout")
-       .done(console.log("desloggeado"))
+       .done(cargarUsuario())
        .fail(function (jqXHR, textStatus) {
-               alert('Failed: ' + textStatus);
-             });
+            alert('Failed: ' + textStatus);
+        });
     }
+
