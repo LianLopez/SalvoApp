@@ -33,13 +33,19 @@
           </tr>
           </tbody>
         </table>
-        <form id="login-form" onsubmit="return false" v-if="currentUser == 'Guest'">
-            <label>Name: <input type="text" name="username"></label>
+        <div v-if="currentUser == 'Guest'">
+        <form id="login-form" onsubmit="return false" >
+            <label>Username: <input type="text" name="username"></label>
             <label>Password: <input type="password" name="password"></label>
             <button onclick="login()">LOGIN</button>
-
         </form>
-
+        <form id="register-form" onsubmit="return false" class="d-flex flex-column w-25">
+            <label>Username: <input type="email" name="username" required></label>
+            <label>Password: <input type="password" name="password" required></label>
+            <label>password2: <input type="password" name="password2" required></label>
+            <button onclick="register()">Register</button>
+        </form>
+        </div>
         <form id="logout-form" onsubmit="return false" v-else>
             <button onclick="logout()">Log out</button>
         </form>
