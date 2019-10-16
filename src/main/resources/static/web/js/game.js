@@ -51,6 +51,9 @@ function register(){
     .done(function () {
             alert('Success');
           })
+    .done(function (){
+      location.reload();
+    })
     .fail(function (jqXHR, textStatus) {
             alert('Failed: ' + jqXHR.status);
           });

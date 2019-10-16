@@ -65,9 +65,9 @@ public class GamePlayer {
 
   public Map<String, Object> getDto() {
     Map<String, Object> dto = new LinkedHashMap<>();
-    dto.put("id", getId());
-    dto.put("player", getPlayer().getPlayerDto());
-    dto.put("score", getPlayer().getScores());
+    dto.put("gpid", getId());
+    dto.put("id", getPlayer().getId());
+    dto.put("name", getPlayer().getUserName());
     return dto;
   }
 }
