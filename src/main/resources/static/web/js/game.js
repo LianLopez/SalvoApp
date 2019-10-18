@@ -25,15 +25,12 @@ function loadData() {
     .fail(function (jqXHR, textStatus) {
       alert('Failed: ' + textStatus);
     });
-
-
-
 }
 
 function cargarUsuario() {
   $.get("/api/games")
     .done(function (data) {
-      app.games = data.games;
+      app.games = data.games.reverse();
       app.currentUser = data.player.email;
       console.log(data.player.email)
     })
@@ -42,6 +39,13 @@ function cargarUsuario() {
     })
 }
 
+function createGame(){
+
+}
+
+function joinGame(gpid){
+    location.href = "/web/games.html?gp="+gpid;
+}
 function register(){
     var form = document.getElementById("register-form");
     $.post("/api/players", {
@@ -74,8 +78,6 @@ function login() {
     console.log("Ya existe un usuario")
   }
 }
-
-
 
 function logout() {
   $.post("/api/logout")

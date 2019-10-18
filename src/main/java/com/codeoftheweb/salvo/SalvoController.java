@@ -38,6 +38,7 @@ public class SalvoController {
     }
     dto.put("games", gameRepository.findAll()
             .stream()
+            .sorted(Comparator.comparing(Game::getId))
             .map(Game::getDto)
             .collect(toList()));
     return dto;
