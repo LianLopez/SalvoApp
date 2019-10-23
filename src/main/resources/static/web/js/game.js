@@ -61,6 +61,9 @@ function register(){
     .fail(function (jqXHR, textStatus) {
             alert('Failed: ' + jqXHR.status);
           });
+          if(jqXHR.status == 401 ){
+          alert("failed: ")
+          }
 }
 
 function login() {

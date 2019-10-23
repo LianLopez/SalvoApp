@@ -49,18 +49,30 @@ public class SalvoController {
   }
 
   @RequestMapping("/game_view/{id}")
-  public Map<String, Object> getGameView(@PathVariable long id) {
+  public Map<String, Object> getGameView(@PathVariable long id, Authentication authentication) {
     GamePlayer gamePlayer = gamePlayerRepository.findById(id).get();
-    Map<String, Object> dto = gamePlayer.getGame().getDto();
-    dto.put("ships", getShipList(gamePlayer.getShips()));
-    Set<GamePlayer> gamePlayers = gamePlayer.getGame().getGamePlayers();
-    Set<Salvo> salvos = gamePlayers.stream()
-            .flatMap(gp -> gp.getSalvos()
-                    .stream())
-            .collect(toSet());
-    dto.put("salvos", salvos.stream().map(Salvo::getDto));
-    return dto;
+    Map<String, Object> dto = new LinkedHashMap<>();
+    if (Guest(authentication)) {
+      Player player = playerRepository.findByUserName(authentication.getName());
+      if (gamePlayer.getPlayer().getId() == player.getId()) {
+        Map<String, Object> dtoGame = gamePlayer.getGame().getDto();
+        dtoGame.put("ships", getShipList(gamePlayer.getShips()));
+        Set<GamePlayer> gamePlayers = gamePlayer.getGame().getGamePlayers();
+        Set<Salvo> salvos = gamePlayers.stream()
+                .flatMap(gp -> gp.getSalvos()
+                        .stream())
+                .collect(toSet());
+        dtoGame.put("salvos", salvos.stream().map(Salvo::getDto));
+        return dtoGame;
+      }else{
+        dto.put("error","UNAUTHORIZED");
+        dto.put("status", "401");
+        return dto;
+      }
+    }
+      return null;
   }
+
 
   @RequestMapping(path = "/players", method = RequestMethod.POST)
   public ResponseEntity<Object> register(
@@ -76,6 +88,22 @@ public class SalvoController {
     Player player = new Player (email, password);
     playerRepository.save(player);
     return new ResponseEntity<>(HttpStatus.CREATED);
+  }
+
+  @RequestMapping(path = "/games", method = RequestMethod.POST)
+  public ResponseEntity<Object> createGame(Authentication authentication){
+    if (Guest(authentication)){
+      Game game = new Game();
+      Player player = playerRepository.findByUserName(authentication.getName());
+      gameRepository.save(game);
+      GamePlayer gamePlayer = new GamePlayer(game, player);
+      gamePlayerRepository.save(gamePlayer);
+      Map<String, Object> dto = new LinkedHashMap<>();
+      dto.put("gpid", gamePlayer.getId());
+      return new ResponseEntity<>(dto, HttpStatus.CREATED);
+    }else {
+      return new ResponseEntity<>("Error: Not user logged", HttpStatus.FORBIDDEN);
+    }
   }
 
 

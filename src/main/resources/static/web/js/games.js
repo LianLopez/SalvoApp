@@ -7,11 +7,12 @@ function getParameterByName(name) {
     .done(function (data) {
       console.log(data);
       var playerInfo;
-      if (data.gamePlayers[0].id == getParameterByName('gp'))
+      if (data.gamePlayers[0].id == getParameterByName('gp')){
         playerInfo = [data.gamePlayers[0].player, data.gamePlayers[1].player];
-      else
+      }
+      else{
         playerInfo = [data.gamePlayers[1].player, data.gamePlayers[0].player];
-
+}
       $('#playerInfo').text(playerInfo[0].email + '(you) vs ' + playerInfo[1].email);
 
       data.ships.forEach(function (shipPiece) {
