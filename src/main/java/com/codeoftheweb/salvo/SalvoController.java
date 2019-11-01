@@ -114,13 +114,12 @@ public class SalvoController {
     Player player = playerRepository.findByUserName(authentication.getName());
     if (Guest(authentication)) {
       return new ResponseEntity<>("Error: Not user logged", HttpStatus.FORBIDDEN);
-    } else if (game.getGamePlayers().size() < 1 && game.getGamePlayers().stream().map(gamePlayer -> gamePlayer.getPlayer().getUserName()).collect(Collectors.toList()).contains(authentication.getName())) {
-      Map<String, Object> dto = new LinkedHashMap<>();
-      dto.put("status", "200");
-      return new ResponseEntity<>(dto, HttpStatus.ACCEPTED);
+    } else if (game.getGamePlayers().size() < 2 && game.getGamePlayers().stream().map(gamePlayer -> gamePlayer.getPlayer().getUserName()).collect(Collectors.toList()).contains(authentication.getName())) {
+      return new ResponseEntity<>(HttpStatus.FORBIDDEN);
     }
-
-    return null;
+    Map<String, Object> dto = new LinkedHashMap<>();
+    gamePlayerRepository.save(new GamePlayer(game, player));
+    return new ResponseEntity<>(HttpStatus.ACCEPTED);
   }
 
 
