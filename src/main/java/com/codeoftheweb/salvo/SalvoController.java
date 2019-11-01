@@ -8,6 +8,8 @@ import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.*;
+import java.util.stream.Collector;
+import java.util.stream.Collectors;
 
 import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toSet;
@@ -112,11 +114,12 @@ public class SalvoController {
     Player player = playerRepository.findByUserName(authentication.getName());
     if (Guest(authentication)) {
       return new ResponseEntity<>("Error: Not user logged", HttpStatus.FORBIDDEN);
-    } else if (true) {
+    } else if (game.getGamePlayers().size() < 1 && game.getGamePlayers().stream().map(gamePlayer -> gamePlayer.getPlayer().getUserName()).collect(Collectors.toList()).contains(authentication.getName())) {
       Map<String, Object> dto = new LinkedHashMap<>();
       dto.put("status", "200");
       return new ResponseEntity<>(dto, HttpStatus.ACCEPTED);
     }
+
     return null;
   }
 
