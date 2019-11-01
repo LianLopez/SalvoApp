@@ -4,6 +4,17 @@ var app = new Vue({
     players: [],
     games: [],
     currentUser: ""
+  },
+  methods: {
+    joinGameAjax : function (gameId){
+                       $.post("/api/games/"+gameId+"/players")
+                       .done(function (data){
+                        console.log(data)
+                        })
+                       .fail(function (jqXHR, textStatus) {
+                             alert('Failed: ' + textStatus);
+                           });
+                    }
   }
 })
 
@@ -40,12 +51,22 @@ function cargarUsuario() {
 }
 
 function createGame(){
-
+    $.post("/api/games")
+    .done(function(data){
+        joinGame(data.gpid);
+    })
+    .fail(function (jqXHR, textStatus) {
+          alert('Failed: ' + textStatus);
+        })
 }
 
 function joinGame(gpid){
     location.href = "/web/games.html?gp="+gpid;
 }
+
+
+
+
 function register(){
     var form = document.getElementById("register-form");
     $.post("/api/players", {

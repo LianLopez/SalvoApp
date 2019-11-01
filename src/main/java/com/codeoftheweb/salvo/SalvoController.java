@@ -51,8 +51,12 @@ public class SalvoController {
   @RequestMapping("/game_view/{id}")
   public Map<String, Object> getGameView(@PathVariable long id, Authentication authentication) {
     GamePlayer gamePlayer = gamePlayerRepository.findById(id).get();
-    Map<String, Object> dto = new LinkedHashMap<>();
     if (Guest(authentication)) {
+      Map<String, Object> dto = new LinkedHashMap<>();
+      dto.put("error", "UNAUTHORIZED");
+      dto.put("status", "401");
+      return dto;
+    } else {
       Player player = playerRepository.findByUserName(authentication.getName());
       if (gamePlayer.getPlayer().getId() == player.getId()) {
         Map<String, Object> dtoGame = gamePlayer.getGame().getDto();
@@ -63,20 +67,15 @@ public class SalvoController {
                         .stream())
                 .collect(toSet());
         dtoGame.put("salvos", salvos.stream().map(Salvo::getDto));
+        dtoGame.put("status", "200");
         return dtoGame;
-      }else{
-        dto.put("error","UNAUTHORIZED");
-        dto.put("status", "401");
-        return dto;
       }
-    }
       return null;
+    }
   }
 
-
   @RequestMapping(path = "/players", method = RequestMethod.POST)
-  public ResponseEntity<Object> register(
-          @RequestParam String email, @RequestParam String password) {
+  public ResponseEntity<Object> register(@RequestParam String email, @RequestParam String password) {
 
     if (email.isEmpty() || password.isEmpty()) {
       return new ResponseEntity<>("Missing data", HttpStatus.BAD_REQUEST);
@@ -90,9 +89,12 @@ public class SalvoController {
     return new ResponseEntity<>(HttpStatus.CREATED);
   }
 
+  //Crear nueva partida
   @RequestMapping(path = "/games", method = RequestMethod.POST)
   public ResponseEntity<Object> createGame(Authentication authentication){
     if (Guest(authentication)){
+      return new ResponseEntity<>("Error: Not user logged", HttpStatus.FORBIDDEN);
+    }else {
       Game game = new Game();
       Player player = playerRepository.findByUserName(authentication.getName());
       gameRepository.save(game);
@@ -101,9 +103,21 @@ public class SalvoController {
       Map<String, Object> dto = new LinkedHashMap<>();
       dto.put("gpid", gamePlayer.getId());
       return new ResponseEntity<>(dto, HttpStatus.CREATED);
-    }else {
-      return new ResponseEntity<>("Error: Not user logged", HttpStatus.FORBIDDEN);
     }
+  }
+
+  @RequestMapping(path = "/game/{nn}/players", method = RequestMethod.POST)
+  public ResponseEntity<Object> joinGame(Authentication authentication, @PathVariable long nn) {
+    Game game = gameRepository.findById(nn).get();
+    Player player = playerRepository.findByUserName(authentication.getName());
+    if (Guest(authentication)) {
+      return new ResponseEntity<>("Error: Not user logged", HttpStatus.FORBIDDEN);
+    } else if (true) {
+      Map<String, Object> dto = new LinkedHashMap<>();
+      dto.put("status", "200");
+      return new ResponseEntity<>(dto, HttpStatus.ACCEPTED);
+    }
+    return null;
   }
 
 

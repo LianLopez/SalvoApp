@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:v-bind="http://www.w3.org/1999/xhtml">
+<html lang="en" xmlns:v-bind="http://www.w3.org/1999/xhtml" xmlns:v-on="http://www.w3.org/1999/xhtml">
 <head>
   <meta charset="UTF-8">
   <title>Ships locations!</title>
@@ -29,7 +29,6 @@
             <td>{{player.lost}}</td>
             <td>{{player.ties}}</td>
             <td>{{player.total}}</td>
-            </td>
           </tr>
           </tbody>
         </table>
@@ -39,7 +38,7 @@
         </div>
 
         <table class="table">
-            <h3>Games completed</h3>
+            <h3>Games</h3>
             <thead class="thead-dark">
                 <tr>
                     <th>N°</th>
@@ -52,10 +51,10 @@
             <tr v-for="game in games">
                 <th scope="row"> {{game.id}}</th>
                 <td>{{game.players[0].name}}</td>
-                <td>{{game.players[1].name}}</td>
-                <td v-show="currentUser != 'Guest' && currentUser != game.players[0].name">
-
-                </td>
+                <td v-if="game.players[1]">{{game.players[1].name}}</td>
+                <td v-else>--</td>
+                <td v-show="currentUser != 'Guest' && currentUser != game.players[0].name && game.players.length < 2">
+                    <button v-on:click="joinGameAjax(game.id)">Join Game</button>
                 </td>
             </tr>
             </tbody>

@@ -79,7 +79,7 @@ public class Player {
   public Map<String, Object> getPlayerDto() {
     Map<String, Object> dto = new LinkedHashMap<>();
     dto.put("id", getId());
-    dto.put("name", getUserName());
+    dto.put("email", getUserName());
     return dto;
   }
 
