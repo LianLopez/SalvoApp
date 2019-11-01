@@ -6,14 +6,19 @@ function getParameterByName(name) {
  $.get('/api/game_view/' + getParameterByName('gp'))
     .done(function (data) {
       console.log(data);
+      if(data.status == "200"){
       var playerInfo;
-      if (data.gamePlayers[0].id == getParameterByName('gp')){
-        playerInfo = [data.gamePlayers[0].player, data.gamePlayers[1].player];
+      if (data.players[0].gpid == getParameterByName('gp')){
+        if(data.players[1]){
+        playerInfo = [data.players[0].name, data.players[1].name];
+        }else{
+        playerInfo = [data.players[0].name, "Waiting for another player"];
+        }
       }
       else{
-        playerInfo = [data.gamePlayers[1].player, data.gamePlayers[0].player];
+        playerInfo = [data.players[1], data.players[0]];
 }
-      $('#playerInfo').text(playerInfo[0].email + '(you) vs ' + playerInfo[1].email);
+      $('#playerInfo').text(playerInfo[0] + '(you) vs ' + playerInfo[1]);
 
       data.ships.forEach(function (shipPiece) {
         shipPiece.shipLocations.forEach(function (shipLocation) {
@@ -38,6 +43,9 @@ function getParameterByName(name) {
           });
         }
       });
+    }else{
+        location.href = "/web/game.html";
+    }
     })
     .fail(function (jqXHR, textStatus) {
       alert('Failed: ' + textStatus);
