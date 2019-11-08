@@ -33,7 +33,7 @@
           </tbody>
         </table>
 
-        <div>
+        <div v-if="currentUser != 'Guest'">
             <button onclick="createGame()">Create game</button>
         </div>
 
@@ -41,21 +41,27 @@
             <h3>Games</h3>
             <thead class="thead-dark">
                 <tr>
-                    <th>N°</th>
+                    <th>Size</th>
                     <th>Player one</th>
                     <th>Player two</th>
-                    <th></th>
+                    <th>Action</th>
                 </tr>
             </thead>
             <tbody>
             <tr v-for="game in games">
-                <th scope="row"> {{game.id}}</th>
+                <th scope="row" v-if="game.players.length < 2"> 1/2 </th>
+                <th v-else>full</th>
                 <td>{{game.players[0].name}}</td>
                 <td v-if="game.players[1]">{{game.players[1].name}}</td>
                 <td v-else>--</td>
-                <td v-show="currentUser != 'Guest' && currentUser != game.players[0].name && game.players.length < 2">
+                <td v-if="currentUser != 'Guest' && currentUser != game.players[0].name && game.players.length < 2">
                     <button v-on:click="joinGameAjax(game.id)">Join Game</button>
                 </td>
+                <td v-if="currentUser != 'Guest' && (currentUser == game.players[0].name || (game.players[1].name && currentUser == game.players[1].name))">
+                    <button v-if="currentUser == game.players[0].name" v-on:click="returnGame(game.players[0].gpid)" >Return</button>
+                    <button v-else v-on:click="returnGame(game.players[1].gpid)">Return</button>
+                </td>
+                <td v-else>--</td>
             </tr>
             </tbody>
         </table>
@@ -68,7 +74,6 @@
         <form id="register-form" onsubmit="return false" class="d-flex flex-column w-25">
             <label>Username: <input type="email" name="username" required></label>
             <label>Password: <input type="password" name="password" required></label>
-            <label>password2: <input type="password" name="password2" required></label>
             <button onclick="register()">Register</button>
         </form>
         </div>

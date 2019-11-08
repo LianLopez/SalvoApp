@@ -9,12 +9,16 @@ var app = new Vue({
     joinGameAjax : function (gameId){
                        $.post("/api/games/"+gameId+"/players")
                        .done(function (data){
-                        console.log(data)
+                        joinGame(data.gpid);
                         })
                        .fail(function (jqXHR, textStatus) {
                              alert('Failed: ' + textStatus);
                            });
+                    },
+    returnGame : function (gpid){
+                        joinGame(gpid)
                     }
+
   }
 })
 

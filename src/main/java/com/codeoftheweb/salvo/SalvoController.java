@@ -118,8 +118,10 @@ public class SalvoController {
       return new ResponseEntity<>(HttpStatus.FORBIDDEN);
     }
     Map<String, Object> dto = new LinkedHashMap<>();
-    gamePlayerRepository.save(new GamePlayer(game, player));
-    return new ResponseEntity<>(HttpStatus.ACCEPTED);
+    GamePlayer gamePlayer = new GamePlayer(game, player);
+    gamePlayerRepository.save(gamePlayer);
+    dto.put("gpid",gamePlayer.getId());
+    return new ResponseEntity<>(dto, HttpStatus.ACCEPTED);
   }
 
 
