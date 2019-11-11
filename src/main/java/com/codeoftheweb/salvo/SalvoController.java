@@ -27,10 +27,13 @@ public class SalvoController {
   @Autowired
   private PlayerRepository playerRepository;
 
+  @Autowired
+  private ShipRepository shipRepository;
+
   @RequestMapping("/games")
   public Map<String, Object> getGames(Authentication authentication) {
     Map<String, Object> dto = new LinkedHashMap<>();
-    if (Guest(authentication)){
+    if (isGuest(authentication)){
       Map<String, Object> guest = new LinkedHashMap<>();
       guest.put("email", "Guest");
       dto.put("player", guest);
@@ -46,14 +49,14 @@ public class SalvoController {
     return dto;
   }
 
-  private boolean Guest(Authentication authentication) {
+  private boolean isGuest(Authentication authentication) {
     return authentication == null || authentication instanceof AnonymousAuthenticationToken;
   }
 
   @RequestMapping("/game_view/{id}")
   public Map<String, Object> getGameView(@PathVariable long id, Authentication authentication) {
     GamePlayer gamePlayer = gamePlayerRepository.findById(id).get();
-    if (Guest(authentication)) {
+    if (isGuest(authentication)) {
       Map<String, Object> dto = new LinkedHashMap<>();
       dto.put("error", "UNAUTHORIZED");
       dto.put("status", "401");
@@ -94,7 +97,7 @@ public class SalvoController {
   //Crear nueva partida
   @RequestMapping(path = "/games", method = RequestMethod.POST)
   public ResponseEntity<Object> createGame(Authentication authentication){
-    if (Guest(authentication)){
+    if (isGuest(authentication)){
       return new ResponseEntity<>("Error: Not user logged", HttpStatus.FORBIDDEN);
     }else {
       Game game = new Game();
@@ -112,9 +115,9 @@ public class SalvoController {
   public ResponseEntity<Object> joinGame(Authentication authentication, @PathVariable long nn) {
     Game game = gameRepository.findById(nn).get();
     Player player = playerRepository.findByUserName(authentication.getName());
-    if (Guest(authentication)) {
+    if (isGuest(authentication)) {
       return new ResponseEntity<>("Error: Not user logged", HttpStatus.FORBIDDEN);
-    } else if (game.getGamePlayers().size() < 2 && game.getGamePlayers().stream().map(gamePlayer -> gamePlayer.getPlayer().getUserName()).collect(Collectors.toList()).contains(authentication.getName())) {
+    } else if (game.getGamePlayers().size() >= 2 || game.getGamePlayers().stream().map(gamePlayer -> gamePlayer.getPlayer().getUserName()).collect(Collectors.toList()).contains(authentication.getName())) {
       return new ResponseEntity<>(HttpStatus.FORBIDDEN);
     }
     Map<String, Object> dto = new LinkedHashMap<>();
@@ -134,6 +137,38 @@ public class SalvoController {
             .collect(toList());
   }
 
+  @RequestMapping("/games/players/{gpId}/ships")
+  public ResponseEntity<Map> addShip(@PathVariable long gpId, Authentication authentication, @RequestBody Set<Ship> ships) {
+    if (isGuest(authentication)) {
+      return new ResponseEntity<>(makeMap("Error", "You are a guest"), HttpStatus.UNAUTHORIZED);
+    }
+    Player player = playerRepository.findByUserName(authentication.getName());
+    GamePlayer gamePlayer = gamePlayerRepository.getOne(gpId);
+
+    if (player == null) {
+      return new ResponseEntity<>(makeMap("error", "Unauthorized"), HttpStatus.UNAUTHORIZED);
+    }
+    if (gamePlayer == null) {
+      return new ResponseEntity<>(makeMap("error", "Unauthorized"), HttpStatus.UNAUTHORIZED);
+    }
+    if (gamePlayer.getPlayer().getId() != player.getId()) {
+      return new ResponseEntity<>(makeMap("error", "Player doesn't exist"), HttpStatus.FORBIDDEN);
+    }
+    if (!gamePlayer.getShips().isEmpty()) {
+      return new ResponseEntity<>(makeMap("error", "Unauthorized, already have ships"), HttpStatus.UNAUTHORIZED);
+    }
+    ships.forEach(ship -> {
+      Ship ship1 = new Ship(ship.getType(), ship.getShipLocation(), gamePlayer);
+      shipRepository.save(ship1);
+    });
+    return new ResponseEntity<>(makeMap("OK", "Ship created"), HttpStatus.CREATED);
+  }
+
+  private Map<String, Object> makeMap(String key, Object value) {
+    Map<String, Object> map = new HashMap<>();
+    map.put(key, value);
+    return map;
+  }
   private List<Map<String, Object>> getShipList(Set<Ship> ships) {
     return ships
             .stream()

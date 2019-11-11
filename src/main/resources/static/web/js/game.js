@@ -1,116 +1,64 @@
-var app = new Vue({
-  el: "#app",
-  data: {
-    players: [],
-    games: [],
-    currentUser: ""
-  },
-  methods: {
-    joinGameAjax : function (gameId){
-                       $.post("/api/games/"+gameId+"/players")
-                       .done(function (data){
-                        joinGame(data.gpid);
-                        })
-                       .fail(function (jqXHR, textStatus) {
-                             alert('Failed: ' + textStatus);
-                           });
-                    },
-    returnGame : function (gpid){
-                        joinGame(gpid)
-                    }
-
-  }
-})
-
-$(function () {
-  loadData();
-  cargarUsuario();
-});
-
 function getParameterByName(name) {
-  var match = RegExp('[?&]' + name + '=([^&]*)').exec(window.location.search);
-  return match && decodeURIComponent(match[1].replace(/\+/g, ' '));
-}
+   var match = RegExp('[?&]' + name + '=([^&]*)').exec(window.location.search);
+   return match && decodeURIComponent(match[1].replace(/\+/g, ' '));
+ }
 
-function loadData() {
-  $.get('/api/leaderboard')
+ $.get('/api/game_view/' + getParameterByName('gp'))
     .done(function (data) {
-      app.players = data;
-    })
-    .fail(function (jqXHR, textStatus) {
-      alert('Failed: ' + textStatus);
-    });
+      console.log(data);
+      if(data.status == "200"){
+      var playerInfo;
+      if (data.players[0].gpid == getParameterByName('gp')){
+        if(data.players[1]){
+        playerInfo = [data.players[0].name, data.players[1].name];
+        }else{
+        playerInfo = [data.players[0].name, "Waiting for another player"];
+        }
+      }
+      else{
+        playerInfo = [data.players[1], data.players[0]];
 }
+      $('#playerInfo').text(playerInfo[0] + '(you) vs ' + playerInfo[1]);
 
-function cargarUsuario() {
-  $.get("/api/games")
-    .done(function (data) {
-      app.games = data.games.reverse();
-      app.currentUser = data.player.email;
-      console.log(data.player.email)
-    })
-    .fail(function (jqXHR, textStatus) {
-      alert('Failed: ' + textStatus);
-    })
-}
-
-function createGame(){
-    $.post("/api/games")
-    .done(function(data){
-        joinGame(data.gpid);
-    })
-    .fail(function (jqXHR, textStatus) {
-          alert('Failed: ' + textStatus);
-        })
-}
-
-function joinGame(gpid){
-    location.href = "/web/games.html?gp="+gpid;
-}
-
-
-
-
-function register(){
-    var form = document.getElementById("register-form");
-    $.post("/api/players", {
-        email: form["username"].value,
-        password: form["password"].value
-    })
-    .done(function () {
-            alert('Success');
-          })
-    .done(function (){
-      location.reload();
-    })
-    .fail(function (jqXHR, textStatus) {
-            alert('Failed: ' + jqXHR.status);
-          });
-          if(jqXHR.status == 401 ){
-          alert("failed: ")
+      data.ships.forEach(function (shipPiece) {
+        shipPiece.shipLocations.forEach(function (shipLocation) {
+          let turnHitted = isHit(shipLocation,data.salvos,playerInfo[0].id)
+          if(turnHitted >0){
+            $('#B_' + shipLocation).addClass('ship-piece-hited');
+            $('#B_' + shipLocation).text(turnHitted);
           }
-}
-
-function login() {
-  if (app.currentUser == "Guest") {
-    var form = document.getElementById('login-form')
-    $.post("/api/login", {
-        username: form["username"].value,
-        password: form["password"].value
-      })
-      .done(setTimeout(function(){ cargarUsuario(); }, 1000))
-      .fail(function (jqXHR, textStatus) {
-        alert('Failed: ' + jqXHR.status);
+          else
+            $('#B_' + shipLocation).addClass('ship-piece');
+        });
       });
-  } else {
-    console.log("Ya existe un usuario")
-  }
-}
-
-function logout() {
-  $.post("/api/logout")
-    .done(window.location.replace("game.html"))
+      data.salvos.forEach(function (salvo) {
+        console.log(salvo);
+        if (playerInfo[0].id === salvo.player) {
+          salvo.salvoLocations.forEach(function (location) {
+            $('#S_' + location).addClass('salvo');
+          });
+        } else {
+          salvo.salvoLocations.forEach(function (location) {
+            $('#_' + location).addClass('salvo');
+          });
+        }
+      });
+    }else{
+        location.href = "/web/game.html";
+    }
+    })
     .fail(function (jqXHR, textStatus) {
       alert('Failed: ' + textStatus);
     });
-}
+
+function isHit(shipLocation,salvos,playerId) {
+  var hit = 0;
+  salvos.forEach(function (salvo) {
+    if(salvo.player != playerId)
+      salvo.salvoLocations.forEach(function (location) {
+        if(shipLocation === location)
+          hit = salvo.turn;
+      });
+  });
+  return hit
+  };
