@@ -65,7 +65,7 @@ function createGame(){
 }
 
 function joinGame(gpid){
-    location.href = "/web/games.html?gp="+gpid;
+    location.href = "/web/game.html?gp="+gpid;
 }
 
 function register(){
@@ -106,7 +106,7 @@ function login() {
 
 function logout() {
   $.post("/api/logout")
-    .done(window.location.replace("game.html"))
+    .done(window.location.replace("games.html"))
     .fail(function (jqXHR, textStatus) {
       alert('Failed: ' + textStatus);
     });

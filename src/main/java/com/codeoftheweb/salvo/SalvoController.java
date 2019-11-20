@@ -150,7 +150,7 @@ public class SalvoController {
     }
     if (gamePlayer == null) {
       return new ResponseEntity<>(makeMap("error", "Unauthorized"), HttpStatus.UNAUTHORIZED);
-    }
+    } 
     if (gamePlayer.getPlayer().getId() != player.getId()) {
       return new ResponseEntity<>(makeMap("error", "Player doesn't exist"), HttpStatus.FORBIDDEN);
     }
@@ -158,8 +158,8 @@ public class SalvoController {
       return new ResponseEntity<>(makeMap("error", "Unauthorized, already have ships"), HttpStatus.UNAUTHORIZED);
     }
     ships.forEach(ship -> {
-      Ship ship1 = new Ship(ship.getType(), ship.getShipLocation(), gamePlayer);
-      shipRepository.save(ship1);
+      ship.setGamePlayer(gamePlayer);
+      shipRepository.save(ship);
     });
     return new ResponseEntity<>(makeMap("OK", "Ship created"), HttpStatus.CREATED);
   }
