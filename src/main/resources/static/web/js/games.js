@@ -11,15 +11,46 @@ var app = new Vue({
     joinGameAjax : function (gameId){
                        $.post("/api/games/"+gameId+"/players")
                        .done(function (data){
-                        joinGame(data.gpid);
+                        app.joinGame(data.gpid);
                         })
                        .fail(function (jqXHR, textStatus) {
-                             alert('Failed: ' + textStatus);
+                             console.log(jqXHR, textStatus)
                            });
                     },
-    returnGame : function (gpid){
-                        joinGame(gpid)
-                    }
+    joinGame : function (gpid){
+                        location.href = "/web/game.html?gp="+gpid;
+                    },
+    register() {
+        $.post("/api/players", {
+                username: app.username,
+                password: app.password
+            })
+            .done(function () {
+                    app.login()
+                  })
+            .fail(function (jqXHR, textStatus) {
+                    if(jqXHR.status == 401 ){
+                              alert("failed: no tenes permisos")
+                              console.log(textStatus)
+                              }
+                  });
+
+    },
+    login() {
+        if (app.currentUser == "Guest") {
+            $.post("/api/login", {
+                username: app.username,
+                password: app.password
+              })
+              .done(setTimeout(function(){ cargarUsuario(); }, 1000))
+              .fail(function (jqXHR, textStatus) {
+                alert('Failed: ' + jqXHR.status);
+              });
+          } else {
+            console.log("Ya existe un usuario");
+            window.reload();
+          }
+    }
     }
 
 })
@@ -29,10 +60,7 @@ $(function () {
   cargarUsuario();
 });
 
-function getParameterByName(name) {
-  var match = RegExp('[?&]' + name + '=([^&]*)').exec(window.location.search);
-  return match && decodeURIComponent(match[1].replace(/\+/g, ' '));
-}
+
 
 function loadData() {
   $.get('/api/leaderboard')
@@ -59,51 +87,15 @@ function cargarUsuario() {
 function createGame(){
     $.post("/api/games")
     .done(function(data, textStatus){
-        console.log(textStatus);
+        if(data.status == 200){
+           app.joinGame(data.gpid);
+        }else{
+            alert("bad response");
+        }
     })
     .fail(function (jqXHR, textStatus) {
           alert('Failed: ' + textStatus);
         })
-}
-
-function joinGame(gpid){
-    location.href = "/web/game.html?gp="+gpid;
-}
-
-function register(){
-    var form = document.getElementById("sign-form");
-    $.post("/api/players", {
-        email: form["username"].value,
-        password: form["password"].value
-    })
-    .done(function () {
-            alert('Success');
-          })
-    .done(function (){
-      location.reload();
-    })
-    .fail(function (jqXHR, textStatus) {
-            alert('Failed: ' + jqXHR.status);
-          });
-          if(jqXHR.status == 401 ){
-          alert("failed: ")
-          }
-}
-
-function login() {
-  if (app.currentUser == "Guest") {
-    var form = document.getElementById('sign-form')
-    $.post("/api/login", {
-        username: form["username"].value,
-        password: form["password"].value
-      })
-      .done(setTimeout(function(){ cargarUsuario(); }, 1000))
-      .fail(function (jqXHR, textStatus) {
-        alert('Failed: ' + jqXHR.status);
-      });
-  } else {
-    console.log("Ya existe un usuario")
-  }
 }
 
 function logout() {

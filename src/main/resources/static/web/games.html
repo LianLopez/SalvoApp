@@ -51,28 +51,29 @@
             <tr v-for="game in games">
                 <th scope="row" v-if="game.players.length < 2"> 1/2 </th>
                 <th v-else>full</th>
-                <td>{{game.players[0].name}}</td>
+                <td v-if="game.players[0]">{{game.players[0].name}}</td>
+                <td v-else>Waiting another player</td>
                 <td v-if="game.players[1]">{{game.players[1].name}}</td>
                 <td v-else>Waiting another player</td>
-                <td v-if="currentUser != 'Guest' && currentUser != game.players[0].name && game.players.length < 2">
+                <td v-if="currentUser != 'Guest' && game.players.length < 2 && game.players[0].name != currentUser">
                     <button v-on:click="joinGameAjax(game.id)">Join Game</button>
                 </td>
-                <td v-if="currentUser != 'Guest' && (currentUser == game.players[0].name || (game.players[1].name && currentUser == game.players[1].name))">
-                    <button v-if="currentUser == game.players[0].name" v-on:click="returnGame(game.players[0].gpid)" >Return</button>
-                    <button v-else v-on:click="returnGame(game.players[1].gpid)">Return</button>
+                <td v-if="currentUser != 'Guest' && (currentUser == game.players[0].name || (game.players[1] && currentUser == game.players[1].name))">
+                    <button v-if="currentUser == game.players[0].name" v-on:click="joinGame(game.players[0].gpid)" >Return</button>
+                    <button v-else v-on:click="joinGame(game.players[1].gpid)">Return</button>
                 </td>
                 <td v-else>--</td>
             </tr>
             </tbody>
         </table>
-        <div v-if="currentUser == 'Guest'">
-        <form id="sign-form" onsubmit="return false" >
-            <label>Username: <input type="text" name="username"></label>
-            <label>Password: <input type="password" name="password"></label>
-            <button onclick="login()">Login</button>
-            <button onclick="register()">Register</button>
-        </form>
+
+        <div id="sign-form" v-if="currentUser == 'Guest'">
+            <label>Username: <input type="email" name="username" v-model="username"></label>
+            <label>Password: <input type="password" name="password" v-model="password"></label>
+            <button v-on:click="login()">Login</button>
+            <button v-on:click="register()">Register</button>
         </div>
+
         <form id="logout-form" onsubmit="return false" v-else>
             <button onclick="logout()">Log out</button>
         </form>

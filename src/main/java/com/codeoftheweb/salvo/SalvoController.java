@@ -80,16 +80,16 @@ public class SalvoController {
   }
 
   @RequestMapping(path = "/players", method = RequestMethod.POST)
-  public ResponseEntity<Object> register(@RequestParam String email, @RequestParam String password) {
+  public ResponseEntity<Object> register(@RequestParam String username, @RequestParam String password) {
 
-    if (email.isEmpty() || password.isEmpty()) {
+    if (username.isEmpty() || password.isEmpty()) {
       return new ResponseEntity<>("Missing data", HttpStatus.BAD_REQUEST);
     }
-    else if (playerRepository.findByUserName(email) !=  null) {
+    else if (playerRepository.findByUserName(username) !=  null) {
       return new ResponseEntity<>("Name already in use", HttpStatus.FORBIDDEN);
     }
 
-    Player player = new Player (email, password);
+    Player player = new Player (username, password);
     playerRepository.save(player);
     return new ResponseEntity<>(HttpStatus.CREATED);
   }
@@ -98,7 +98,7 @@ public class SalvoController {
   @RequestMapping(path = "/games", method = RequestMethod.POST)
   public ResponseEntity<Object> createGame(Authentication authentication){
     if (isGuest(authentication)){
-      return new ResponseEntity<>("Error: Not user logged", HttpStatus.FORBIDDEN);
+      return new ResponseEntity<>("401", HttpStatus.FORBIDDEN);
     }else {
       Game game = new Game();
       Player player = playerRepository.findByUserName(authentication.getName());
@@ -107,6 +107,7 @@ public class SalvoController {
       gamePlayerRepository.save(gamePlayer);
       Map<String, Object> dto = new LinkedHashMap<>();
       dto.put("gpid", gamePlayer.getId());
+      dto.put("status", "200");
       return new ResponseEntity<>(dto, HttpStatus.CREATED);
     }
   }
@@ -117,14 +118,15 @@ public class SalvoController {
     Player player = playerRepository.findByUserName(authentication.getName());
     if (isGuest(authentication)) {
       return new ResponseEntity<>("Error: Not user logged", HttpStatus.FORBIDDEN);
-    } else if (game.getGamePlayers().size() >= 2 || game.getGamePlayers().stream().map(gamePlayer -> gamePlayer.getPlayer().getUserName()).collect(Collectors.toList()).contains(authentication.getName())) {
-      return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+    } else if (game.getGamePlayers().size() > 1 || game.getGamePlayers().stream().map(gamePlayer -> gamePlayer.getPlayer().getUserName()).collect(Collectors.toList()).contains(authentication.getName())) {
+      return new ResponseEntity<>("imposible entrar",HttpStatus.FORBIDDEN);
     }
     Map<String, Object> dto = new LinkedHashMap<>();
     GamePlayer gamePlayer = new GamePlayer(game, player);
     gamePlayerRepository.save(gamePlayer);
     dto.put("gpid",gamePlayer.getId());
     return new ResponseEntity<>(dto, HttpStatus.ACCEPTED);
+
   }
 
 
