@@ -3,7 +3,9 @@ var app = new Vue({
   data: {
     players: [],
     games: [],
-    currentUser: "Guest"
+    currentUser: "Guest",
+    username:"",
+    password:""
   },
   methods: {
     joinGameAjax : function (gameId){
@@ -56,8 +58,8 @@ function cargarUsuario() {
 
 function createGame(){
     $.post("/api/games")
-    .done(function(data){
-        joinGame(data.gpid);
+    .done(function(data, textStatus){
+        console.log(textStatus);
     })
     .fail(function (jqXHR, textStatus) {
           alert('Failed: ' + textStatus);
@@ -69,7 +71,7 @@ function joinGame(gpid){
 }
 
 function register(){
-    var form = document.getElementById("register-form");
+    var form = document.getElementById("sign-form");
     $.post("/api/players", {
         email: form["username"].value,
         password: form["password"].value
@@ -90,7 +92,7 @@ function register(){
 
 function login() {
   if (app.currentUser == "Guest") {
-    var form = document.getElementById('login-form')
+    var form = document.getElementById('sign-form')
     $.post("/api/login", {
         username: form["username"].value,
         password: form["password"].value
