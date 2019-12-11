@@ -30,6 +30,9 @@ public class SalvoController {
   @Autowired
   private ShipRepository shipRepository;
 
+  @Autowired
+  private SalvoRepository salvoRepository;
+
   @RequestMapping("/games")
   public Map<String, Object> getGames(Authentication authentication) {
     Map<String, Object> dto = new LinkedHashMap<>();
@@ -93,7 +96,7 @@ public class SalvoController {
   @RequestMapping(path = "/games", method = RequestMethod.POST)
   public ResponseEntity<Object> createGame(Authentication authentication){
     if (isGuest(authentication)){
-      return new ResponseEntity<>("401", HttpStatus.FORBIDDEN);
+      return new ResponseEntity<>(makeMap("error","No player logged in"), HttpStatus.FORBIDDEN);
     }else {
       Game game = new Game();
       Player player = playerRepository.findByUserName(authentication.getName());
@@ -149,7 +152,7 @@ public class SalvoController {
     }
     if (gamePlayer == null) {
       return new ResponseEntity<>(makeMap("error", "Unauthorized"), HttpStatus.UNAUTHORIZED);
-    } 
+    }
     if (gamePlayer.getPlayer().getId() != player.getId()) {
       return new ResponseEntity<>(makeMap("error", "Player doesn't exist"), HttpStatus.FORBIDDEN);
     }
@@ -163,6 +166,19 @@ public class SalvoController {
     return new ResponseEntity<>(makeMap("OK", "Ship created"), HttpStatus.CREATED);
   }
 
+  @RequestMapping("/games/players/{gpId}/salvoes")
+  public ResponseEntity<Map> addSalvos(@PathVariable long gpId, Authentication authentication, @RequestBody Set<Salvo> salvoes) {
+    GamePlayer gamePlayer = gamePlayerRepository.getOne(gpId);
+    if (isGuest(authentication)) {
+      return new ResponseEntity<>(makeMap("Error", "You are a guest"), HttpStatus.UNAUTHORIZED);
+    }
+    salvoes.forEach(salvo -> {
+      salvo.setGamePlayers(gamePlayer);
+      salvoRepository.save(salvo);
+    });
+    return new ResponseEntity<>(makeMap("OK", "Salvoes created"), HttpStatus.CREATED);
+
+  }
   @RequestMapping("/leaderboard")
   public List<Map<String, Object>> getPlayers() {
     return playerRepository.findAll()

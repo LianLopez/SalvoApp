@@ -49,6 +49,10 @@ public class Salvo {
     return salvosLocation;
   }
 
+  public void setGamePlayers(GamePlayer gamePlayers) {
+    this.gamePlayers = gamePlayers;
+  }
+
   public Map<String, Object> getDto() {
     Map<String, Object> dto = new HashMap<>();
     dto.put("turn", getTurn());
