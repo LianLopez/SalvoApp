@@ -59,8 +59,8 @@
                     <button v-on:click="joinGameAjax(game.id)">Join Game</button>
                 </td>
                 <td v-if="currentUser != 'Guest' && (currentUser == game.players[0].name || (game.players[1] && currentUser == game.players[1].name))">
-                    <button v-if="currentUser == game.players[0].name" v-on:click="joinGame(game.players[0].gpid)" >Return</button>
-                    <button v-else v-on:click="joinGame(game.players[1].gpid)">Return</button>
+                    <button v-if="currentUser == game.players[0].name" v-on:click="returnGame(game.players[0].gpid, game.players[0].hasShips)">Return</button>
+                    <button v-else v-on:click="returnGame(game.players[1].gpid, game.players[1].hasShips)">Return</button>
                 </td>
                 <td v-else>--</td>
             </tr>
@@ -70,21 +70,18 @@
         <div id="sign-form" v-if="currentUser == 'Guest'">
             <label>Username: <input type="email" name="username" v-model="username"></label>
             <label>Password: <input type="password" name="password" v-model="password"></label>
-            <button v-on:click="login()">Login</button>
-            <button v-on:click="register()">Register</button>
+            <button onclick="login()">Login</button>
+            <button onclick="register()">Register</button>
         </div>
 
         <form id="logout-form" onsubmit="return false" v-else>
             <button onclick="logout()">Log out</button>
         </form>
       </div>
-
-
-
     <script src="https://cdn.jsdelivr.net/npm/vue"></script>
 <script src="js/popper.min.js"></script>
 <script src="js/jquery-3.3.1.min.js"></script>
 <script src="js/bootstrap.min.js"></script>
-<script src="./js/games.js"></script>
+<script src="js/games.js"></script>
 </body>
 </html>

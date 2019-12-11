@@ -67,7 +67,17 @@ public class GamePlayer {
     Map<String, Object> dto = new LinkedHashMap<>();
     dto.put("gpid", getId());
     dto.put("id", getPlayer().getId());
+    dto.put("hasShips", this.hasShips());
     dto.put("name", getPlayer().getUserName());
     return dto;
+  }
+
+  public String hasShips(){
+    if (this.getShips().size()>0){
+      return "YES";
+    }
+    else{
+      return "NO";
+    }
   }
 }

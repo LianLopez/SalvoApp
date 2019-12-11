@@ -146,10 +146,15 @@ class WebSecurityConfig extends WebSecurityConfigurerAdapter {
             .antMatchers("/web/games.html/**").permitAll()
             .antMatchers("/web/css/**").permitAll()
             .antMatchers("/web/js/**").permitAll()
+            .antMatchers("/web/assets/**").permitAll()
             .antMatchers("/api/leaderboard").permitAll()
             .antMatchers("/api/games", "/api/login/").permitAll()
             .antMatchers("/api/players").permitAll()
-            .antMatchers("/api/game_view/**", "/web/game.html*", "/api/games/*", "/api/logout/", "/api/game/*/players").hasAuthority("USER")
+            .antMatchers("/api/games/players/*/ships").hasAuthority("USER")
+            .antMatchers("/api/games/players/*/salvoes").hasAuthority("USER")
+            .antMatchers("/api/games/*/players").hasAuthority("USER")
+            .antMatchers("/web/grid.html*").hasAuthority("USER")
+            .antMatchers("/api/game_view/**", "/web/game.html*", "/api/games/*", "/api/logout/" ).hasAuthority("USER")
             .antMatchers("/rest/**").hasAuthority("ADMIN")
             .anyRequest().denyAll();
 

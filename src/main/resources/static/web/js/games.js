@@ -11,46 +11,19 @@ var app = new Vue({
     joinGameAjax : function (gameId){
                        $.post("/api/games/"+gameId+"/players")
                        .done(function (data){
-                        app.joinGame(data.gpid);
+                        returnGame(data.gpId, "NO")
                         })
                        .fail(function (jqXHR, textStatus) {
                              console.log(jqXHR, textStatus)
                            });
                     },
-    joinGame : function (gpid){
-                        location.href = "/web/game.html?gp="+gpid;
-                    },
-    register() {
-        $.post("/api/players", {
-                username: app.username,
-                password: app.password
-            })
-            .done(function () {
-                    app.login()
-                  })
-            .fail(function (jqXHR, textStatus) {
-                    if(jqXHR.status == 401 ){
-                              alert("failed: no tenes permisos")
-                              console.log(textStatus)
+    returnGame : function (gpId, hasShips){
+                      if(hasShips=="YES"){
+                              window.location.href = "/web/game.html?gp=" +gpId;
+                              } else {
+                              window.location.href = "/web/grid.html?gp=" +gpId;
                               }
-                  });
-
-    },
-    login() {
-        if (app.currentUser == "Guest") {
-            $.post("/api/login", {
-                username: app.username,
-                password: app.password
-              })
-              .done(setTimeout(function(){ cargarUsuario(); }, 1000))
-              .fail(function (jqXHR, textStatus) {
-                alert('Failed: ' + jqXHR.status);
-              });
-          } else {
-            console.log("Ya existe un usuario");
-            window.reload();
-          }
-    }
+                    }
     }
 
 })
@@ -88,7 +61,7 @@ function createGame(){
     $.post("/api/games")
     .done(function(data, textStatus){
         if(data.status == 200){
-           app.joinGame(data.gpid);
+           app.returnGame(data.gpid);
         }else{
             alert("bad response");
         }
@@ -97,6 +70,38 @@ function createGame(){
           alert('Failed: ' + textStatus);
         })
 }
+
+function login() {
+                 if (app.currentUser == "Guest") {
+                     $.post("/api/login", {
+                         username: app.username,
+                         password: app.password
+                       })
+                       .done(setTimeout(function(){ cargarUsuario(); }, 1000))
+                       .fail(function (jqXHR, textStatus) {
+                         alert('Failed: ' + jqXHR.status);
+                       });
+                   } else {
+                     console.log("Ya existe un usuario");
+                     window.reload();
+                   }
+             }
+function register() {
+                 $.post("/api/players", {
+                         username: app.username,
+                         password: app.password
+                     })
+                     .done(function () {
+                             login();
+                           })
+                     .fail(function (jqXHR, textStatus) {
+                             if(jqXHR.status == 401 ){
+                                       alert("failed: no tenes permisos")
+                                       console.log(textStatus)
+                                       }
+                           });
+
+             }
 
 function logout() {
   $.post("/api/logout")
