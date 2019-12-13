@@ -62,9 +62,9 @@ const loadGrid = function () {
     rotateShips("destroyer", 3)
     rotateShips("patrol_boat",2)
 
-    listenBusyCells('ships');
+    listenBusyCells('ships')
     $('.grid-stack').on('change', () => listenBusyCells('ships'))
-    
+
 }
 
 
@@ -75,7 +75,7 @@ size:refiere al tamaño de nuestra grilla (siempre sera una matriz
 element: es la tag que contendra nuestra matriz, para este ejemplo
         sera el primer div de nuestro body
 id: sera como lo llamamos, en este caso ship ???)
-*/    
+*/
 const createGrid = function(size, element, id){
     // definimos un nuevo elemento: <div></div>
     let wrapper = document.createElement('DIV')
@@ -95,7 +95,6 @@ const createGrid = function(size, element, id){
         wrapper:
                 <div class="grid-wrapper">
                     <div id="ship-grid-row-0" class="grid-row">
-
                     </div>
                 </div>
         */
@@ -112,13 +111,13 @@ const createGrid = function(size, element, id){
                 cell.id = `${id}${i - 1}${ j - 1}`
             }
             //aqui entran las celdas cabecera de cada fila
-            if(j===0 && i > 0){        
+            if(j===0 && i > 0){
                 // textNode: <span></span>
                 let textNode = document.createElement('SPAN')
-                /*String.fromCharCode(): método estático que devuelve 
+                /*String.fromCharCode(): método estático que devuelve
                 una cadena creada mediante el uso de una secuencia de
                 valores Unicode especificada. 64 == @ pero al entrar
-                cuando i sea mayor a cero, su primer valor devuelto 
+                cuando i sea mayor a cero, su primer valor devuelto
                 sera "A" (A==65)
                 <span>A</span>*/
                 textNode.innerText = String.fromCharCode(i+64)
@@ -163,19 +162,19 @@ const rotateShips = function(shipType, cells){
         .children es una propiedad de sólo lectura que retorna una HTMLCollection "viva"
         de los elementos hijos de un elemento.
         https://developer.mozilla.org/es/docs/Web/API/ParentNode/children
-        El método .hasClass() devuelve verdadero si la clase existe como tal en el 
+        El método .hasClass() devuelve verdadero si la clase existe como tal en el
         elemento/tag incluso si tal elemento posee mas de una clase.
         https://api.jquery.com/hasClass/
         Consultamos si el barco que queremos girar esta en horizontal
         children consulta por el elemento contenido en "this"(tag que lanza el evento)
         ej:
-        <div id="carrier" data-gs-x="0" data-gs-y="3" data-gs-width="5" 
-        data-gs-height="1" class="grid-stack-item ui-draggable ui-resizable 
+        <div id="carrier" data-gs-x="0" data-gs-y="3" data-gs-width="5"
+        data-gs-height="1" class="grid-stack-item ui-draggable ui-resizable
         ui-resizable-autohide ui-resizable-disabled">
             <div class="grid-stack-item-content carrierHorizontal ui-draggable-handle">
             </div>
             <div></div>
-            <div class="ui-resizable-handle ui-resizable-se ui-icon 
+            <div class="ui-resizable-handle ui-resizable-se ui-icon
             ui-icon-gripsmall-diagonal-se" style="z-index: 90; display: none;">
             </div>
         </div>
@@ -201,12 +200,12 @@ const rotateShips = function(shipType, cells){
 	                	$(this).children().removeClass(`${shipType}Horizontal`);
 	                	$(this).children().addClass(`${shipType}Vertical`);
 	            }
-                
-                
+
+
             }else{
             		document.getElementById("alert-text").innerHTML = "A ship is blocking the way!"
             }
-            
+
         //Este bloque se ejecuta si el barco que queremos girar esta en vertical
         }else{
 
@@ -223,7 +222,7 @@ const rotateShips = function(shipType, cells){
                 $(this).children().addClass(`${shipType}Horizontal`);
                 $(this).children().removeClass(`${shipType}Vertical`);
             }
-            
+
         }
     });
 
@@ -231,7 +230,7 @@ const rotateShips = function(shipType, cells){
 
 //Bucle que consulta por todas las celdas para ver si estan ocupadas o no
 const listenBusyCells = function(id){
-    /* id vendria a ser ships. Recordar el id de las celdas del tablero se arma uniendo 
+    /* id vendria a ser ships. Recordar el id de las celdas del tablero se arma uniendo
     la palabra ships + fila + columna contando desde 0. Asi la primer celda tendra id
     ships00 */
     for(let i = 0; i < 10; i++){
@@ -295,7 +294,7 @@ function addShips(){
 
 }
 
-function backHome() {
-    console.log("Retornando")
+function backToHomepage() {
+console.log("retornando")
   window.setTimeout(function () { window.location.href = "http://localhost:8080/web/games.html" }, 1500);
 }

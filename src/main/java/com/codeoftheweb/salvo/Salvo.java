@@ -49,6 +49,10 @@ public class Salvo {
     return salvosLocation;
   }
 
+  public void setTurn(int turn) {
+    this.turn = turn;
+  }
+
   public void setGamePlayers(GamePlayer gamePlayers) {
     this.gamePlayers = gamePlayers;
   }

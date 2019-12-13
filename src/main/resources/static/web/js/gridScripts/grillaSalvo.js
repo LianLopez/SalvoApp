@@ -45,6 +45,7 @@ const loadGrid = function (isStatic) {
 //gets the locations of the ships from the back-end
 const setShips = function () {
     for (i = 0; i < gamesData.ships.length; i++) {
+        gamesData.ships[i].shipLocation.sort();
         //only the first position of a ship is needed. The remaining positions are given by the orientation and the number of cells
         let shipType = (gamesData.ships[i].shipType).toLowerCase()
         let x = +(gamesData.ships[i].shipLocation[0].substring(1)) - 1 //the number of the first position belongs to the x axis. To match the framework structure beginning at 0, we must substract 1 from it
@@ -327,11 +328,11 @@ const stringToInt = function (str) {
 
 const setSalvos = function () {
     for (i = 0; i < gamesData.salvos.length; i++) {
-        for (j = 0; j < gamesData.salvos[i].salvosLocations.length; j++) {
+        for (j = 0; j < gamesData.salvos[i].salvoLocations.length; j++) {
             let turn = gamesData.salvos[i].turn
             let player = gamesData.salvos[i].name
-            let x = +(gamesData.salvos[i].salvosLocations[j].substring(1)) - 1
-            let y = stringToInt(gamesData.salvos[i].salvosLocations[j][0].toUpperCase())
+            let x = +(gamesData.salvos[i].salvoLocations[j].substring(1)) - 1
+            let y = stringToInt(gamesData.salvos[i].salvoLocations[j][0].toUpperCase())
             if (player == actualPlayer.player) {
                 document.getElementById(`salvos${y}${x}`).classList.add('salvos')
                 document.getElementById(`salvos${y}${x}`).innerHTML = `<span>${turn}</span>`

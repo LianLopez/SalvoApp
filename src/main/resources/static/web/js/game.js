@@ -15,6 +15,7 @@ fetch("/api/game_view/"+gpId)
 })
 .then(function(json){
   gamesData = json
+  console.log(gamesData)
   //Determina el jugador actual y contra quien juega
   WhoIsWho()
 
@@ -36,7 +37,7 @@ fetch("/api/game_view/"+gpId)
 
       //Una vez cargado los salvoes con createGrid procedemos a establecer una funcion click por cada celda de la siguiente manera
       $('div[id^="salvos"].grid-cell') .click(function(){
-          if(!$(this).hasClass("salvo") && !$(this).hasClass("targetCell") && $(".targetCell").length < 5)
+          if(!$(this).hasClass("salvos") && !$(this).hasClass("targetCell") && $(".targetCell").length < 5)
             {
               $(this).addClass("targetCell");
             } else if($(this).hasClass("targetCell")){
